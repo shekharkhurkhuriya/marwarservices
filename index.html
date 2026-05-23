@@ -372,6 +372,38 @@ footer span { color:var(--accent2); }
   </div>
 </div>
 
+<!-- CREATE USER MODAL -->
+<div class="modal-overlay" id="createuser-modal">
+  <div class="modal-box">
+    <h3>👤 Naya User Banao</h3>
+    <div class="modal-field">
+      <label>Username (Login ke liye)</label>
+      <input type="text" id="cu-username" placeholder="e.g. ramu123"/>
+    </div>
+    <div class="modal-field">
+      <label>Display Name</label>
+      <input type="text" id="cu-displayname" placeholder="e.g. Ramesh Kumar"/>
+    </div>
+    <div class="modal-field">
+      <label>Password</label>
+      <input type="password" id="cu-pass" placeholder="Min 4 characters"/>
+    </div>
+    <div class="modal-field">
+      <label>Role</label>
+      <select id="cu-role" style="background:var(--bg);border:1px solid var(--border);padding:10px 12px;font-size:0.9rem;color:var(--dark);outline:none;width:100%;">
+        <option value="viewer">👁️ Viewer (Sirf dekh sakta hai)</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closeCreateUser()">Cancel</button>
+      <button class="btn-modal-ok" onclick="createUser()">✅ User Banao</button>
+    </div>
+    <div class="modal-msg" id="cu-msg"></div>
+    <!-- Users List -->
+    <div id="cu-userlist" style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px;"></div>
+  </div>
+</div>
+
 <!-- CHANGE PASSWORD MODAL -->
 <div class="modal-overlay" id="chpwd-modal">
   <div class="modal-box">
@@ -402,7 +434,7 @@ footer span { color:var(--accent2); }
     <div class="logo-sub">Marwar Services — Raw Material Transport</div>
   </div>
   <div class="header-right">
-    <div class="owner-name">👤 Pukhraj Chhaba</div>
+    <div class="owner-name">👤 <span id="header-username">Pukhraj Chhaba</span> <span id="header-role-badge" style="font-size:0.65rem;padding:2px 7px;background:var(--accent);color:#fff;letter-spacing:1px;margin-left:6px;"></span></div>
     <div class="header-date" id="headerDate"></div>
   </div>
 </header>
@@ -758,10 +790,16 @@ footer span { color:var(--accent2); }
       &nbsp;|&nbsp; Marwar Services &nbsp;|&nbsp; Owner: <span>Pukhraj Chhaba</span>
       &nbsp;|&nbsp; Raw Material Transport — Rajasthan
     </div>
-    <div style="display:flex;gap:10px;">
-      <button onclick="openChPwd()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#d4881e';this.style.color='#d4881e'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">🔑 Password Change</button>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <span id="footer-admin-btns" style="display:none;gap:10px;align-items:center;">
+        <button onclick="openCreateUser()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#2e7d52';this.style.color='#2e7d52'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">👤 User Banao</button>
+        <button onclick="openChPwd()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#d4881e';this.style.color='#d4881e'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">🔑 Password Change</button>
+      </span>
       <button onclick="doLogout()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#b5451b';this.style.color='#b5451b'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">🚪 Logout</button>
     </div>
+  </div>
+  <div style="margin-top:10px;border-top:1px solid #333;padding-top:10px;color:#555;font-size:0.7rem;letter-spacing:0.5px;">
+    Developed by <span style="color:var(--accent2);">Shekhar Choudhary</span>
   </div>
 </footer>
 
@@ -1099,18 +1137,56 @@ function updatePaySummary() {
   document.getElementById('dp-totalAll').textContent    = '₹'+payments.reduce((s,r)=>s+r.amount,0).toLocaleString('en-IN');
 }
 
-// ============ LOGIN SYSTEM ============
-const DEFAULT_USER = 'Marwar Services';
-const DEFAULT_PASS = 'MS@123';
+// ============ LOGIN SYSTEM (MULTI-USER) ============
+const ADMIN_USER    = 'Marwar Services';
+const ADMIN_DISPLAY = 'Pukhraj Chhaba';
+let currentRole    = null;
+let currentDisplay = '';
 
-function getStoredPass() {
-  return localStorage.getItem('mst-password') || DEFAULT_PASS;
+function getAdminPass() {
+  return localStorage.getItem('mst-password') || 'MS@123';
+}
+function getUsers() {
+  return JSON.parse(localStorage.getItem('mst-users') || '[]');
+}
+function saveUsers(users) {
+  localStorage.setItem('mst-users', JSON.stringify(users));
 }
 
 function checkSession() {
-  const sess = sessionStorage.getItem('mst-loggedin');
-  if (sess === 'yes') {
+  const role    = sessionStorage.getItem('mst-role');
+  const display = sessionStorage.getItem('mst-display');
+  if (role) {
+    currentRole    = role;
+    currentDisplay = display || '';
     document.getElementById('login-overlay').style.display = 'none';
+    applyRoleUI();
+  }
+}
+
+function applyRoleUI() {
+  document.getElementById('header-username').textContent = currentDisplay;
+  const badge = document.getElementById('header-role-badge');
+  if (currentRole === 'admin') {
+    badge.textContent = 'ADMIN';
+    badge.style.background = 'var(--accent)';
+    document.getElementById('footer-admin-btns').style.display = 'flex';
+    document.querySelectorAll('.btn-submit, .btn-del, .btn-sm').forEach(b => b.style.display = '');
+    document.querySelectorAll('.mat-tag, .exp-tag').forEach(el => el.style.pointerEvents = '');
+    document.querySelectorAll('#panel-trip input:not([readonly]), #panel-trip select, #panel-trip textarea, #panel-driver input:not([readonly]), #panel-driver select, #panel-driver textarea, #panel-rates input').forEach(el => el.removeAttribute('disabled'));
+    // Show rates tab
+    document.querySelectorAll('.tab').forEach(t => { t.style.display = ''; });
+  } else {
+    badge.textContent = 'VIEWER';
+    badge.style.background = 'var(--green)';
+    document.getElementById('footer-admin-btns').style.display = 'none';
+    document.querySelectorAll('.btn-submit, .btn-del, .btn-sm.red').forEach(b => b.style.display = 'none');
+    document.querySelectorAll('#panel-trip input, #panel-trip select, #panel-trip textarea, #panel-driver input, #panel-driver select, #panel-driver textarea, #panel-rates input').forEach(el => el.setAttribute('disabled', true));
+    document.querySelectorAll('.mat-tag, .exp-tag').forEach(el => el.style.pointerEvents = 'none');
+    // Hide rates tab
+    document.querySelectorAll('.tab').forEach(t => {
+      if (t.getAttribute('onclick') && t.getAttribute('onclick').includes('rates')) t.style.display = 'none';
+    });
   }
 }
 
@@ -1118,26 +1194,103 @@ function doLogin() {
   const user = document.getElementById('l-user').value.trim();
   const pass = document.getElementById('l-pass').value;
   const err  = document.getElementById('login-err');
-  if (user === DEFAULT_USER && pass === getStoredPass()) {
-    sessionStorage.setItem('mst-loggedin', 'yes');
+  if (user === ADMIN_USER && pass === getAdminPass()) {
+    sessionStorage.setItem('mst-role', 'admin');
+    sessionStorage.setItem('mst-display', ADMIN_DISPLAY);
+    currentRole = 'admin'; currentDisplay = ADMIN_DISPLAY;
     document.getElementById('login-overlay').style.display = 'none';
-    err.textContent = '';
-  } else {
-    err.textContent = '❌ Username ya password galat hai!';
-    document.getElementById('l-pass').value = '';
-    document.getElementById('l-pass').focus();
+    err.textContent = ''; applyRoleUI(); return;
   }
+  const found = getUsers().find(u => u.username === user && u.password === pass);
+  if (found) {
+    sessionStorage.setItem('mst-role', 'viewer');
+    sessionStorage.setItem('mst-display', found.displayName);
+    currentRole = 'viewer'; currentDisplay = found.displayName;
+    document.getElementById('login-overlay').style.display = 'none';
+    err.textContent = ''; applyRoleUI(); return;
+  }
+  err.textContent = '❌ Username ya password galat hai!';
+  document.getElementById('l-pass').value = '';
+  document.getElementById('l-pass').focus();
 }
 
 function doLogout() {
   if (!confirm('Logout karna chahte hain?')) return;
-  sessionStorage.removeItem('mst-loggedin');
+  sessionStorage.removeItem('mst-role');
+  sessionStorage.removeItem('mst-display');
+  currentRole = null; currentDisplay = '';
   document.getElementById('l-user').value = '';
   document.getElementById('l-pass').value = '';
   document.getElementById('login-err').textContent = '';
   document.getElementById('login-overlay').style.display = 'flex';
 }
 
+// ============ CREATE USER (ADMIN ONLY) ============
+function openCreateUser() {
+  if (currentRole !== 'admin') return;
+  document.getElementById('cu-username').value    = '';
+  document.getElementById('cu-displayname').value = '';
+  document.getElementById('cu-pass').value        = '';
+  document.getElementById('cu-msg').textContent   = '';
+  renderUserList();
+  document.getElementById('createuser-modal').classList.add('open');
+}
+function closeCreateUser() {
+  document.getElementById('createuser-modal').classList.remove('open');
+}
+function createUser() {
+  const username    = document.getElementById('cu-username').value.trim();
+  const displayName = document.getElementById('cu-displayname').value.trim();
+  const password    = document.getElementById('cu-pass').value.trim();
+  const msg         = document.getElementById('cu-msg');
+  if (!username || !displayName || !password) {
+    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Sabhi fields bhari honi chahiye!'; return;
+  }
+  if (password.length < 4) {
+    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Password kam se kam 4 characters!'; return;
+  }
+  if (username === ADMIN_USER) {
+    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Yeh username reserved hai!'; return;
+  }
+  const users = getUsers();
+  if (users.find(u => u.username === username)) {
+    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Yeh username pehle se exist karta hai!'; return;
+  }
+  users.push({ username, displayName, password, role: 'viewer', createdAt: new Date().toISOString() });
+  saveUsers(users);
+  msg.style.color = 'var(--green)';
+  msg.textContent = '✅ User "' + displayName + '" ban gaya!';
+  document.getElementById('cu-username').value    = '';
+  document.getElementById('cu-displayname').value = '';
+  document.getElementById('cu-pass').value        = '';
+  renderUserList();
+}
+function deleteUser(username) {
+  if (!confirm('"' + username + '" user ko delete karein?')) return;
+  saveUsers(getUsers().filter(u => u.username !== username));
+  renderUserList();
+}
+function renderUserList() {
+  const users = getUsers();
+  const div = document.getElementById('cu-userlist');
+  if (!users.length) {
+    div.innerHTML = '<p style="color:var(--muted);font-size:0.8rem;text-align:center;">Koi user abhi nahi bana.</p>'; return;
+  }
+  div.innerHTML = '<p style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Existing Viewer Users</p>'
+    + users.map(u => {
+      const uname = u.username.replace(/'/g, "\\'");
+      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg);border:1px solid var(--border);margin-bottom:6px;">'
+        + '<div><strong style="font-size:0.88rem;">' + u.displayName + '</strong>'
+        + '<span style="color:var(--muted);font-size:0.75rem;margin-left:8px;">@' + u.username + '</span>'
+        + '<span style="font-size:0.65rem;padding:1px 6px;background:var(--green);color:#fff;margin-left:6px;letter-spacing:1px;">VIEWER</span></div>'
+        + '<button class="btn-del" onclick="deleteUser(&#39;' + uname + '&#39;)">✕</button></div>';
+    }).join('');
+}
+document.getElementById('createuser-modal').addEventListener('click', function(e){
+  if(e.target === this) closeCreateUser();
+});
+
+// ============ CHANGE PASSWORD (ADMIN) ============
 function openChPwd() {
   document.getElementById('cp-current').value = '';
   document.getElementById('cp-new').value = '';
@@ -1146,39 +1299,36 @@ function openChPwd() {
   document.getElementById('cp-msg').style.color = 'var(--accent)';
   document.getElementById('chpwd-modal').classList.add('open');
 }
-
 function closeChPwd() {
   document.getElementById('chpwd-modal').classList.remove('open');
 }
-
 function changePassword() {
   const current = document.getElementById('cp-current').value;
   const newp    = document.getElementById('cp-new').value.trim();
   const confirm = document.getElementById('cp-confirm').value;
   const msg     = document.getElementById('cp-msg');
-  if (current !== getStoredPass()) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Purana password galat hai!'; return;
+  if (current !== getAdminPass()) {
+    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Purana password galat hai!'; return;
   }
   if (newp.length < 4) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Naya password kam se kam 4 characters ka hona chahiye!'; return;
+    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Naya password kam se kam 4 characters!'; return;
   }
   if (newp !== confirm) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Dono passwords match nahi kar rahe!'; return;
+    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Dono passwords match nahi kar rahe!'; return;
   }
   localStorage.setItem('mst-password', newp);
   msg.style.color = 'var(--green)';
   msg.textContent = '✅ Password badal gaya!';
   setTimeout(() => closeChPwd(), 1800);
 }
-
-// Close modal on overlay click
 document.getElementById('chpwd-modal').addEventListener('click', function(e){
   if(e.target === this) closeChPwd();
 });
 
+// Clear old session format if exists, then check
+if (sessionStorage.getItem('mst-loggedin')) {
+  sessionStorage.removeItem('mst-loggedin');
+}
 // Check session on load
 checkSession();
 </script>
