@@ -1919,5 +1919,23 @@ function downloadFinanceExcel(type) {
 // Init
 checkSession();
 </script>
+  <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+const firebaseConfig = {
+ apiKey: "AIzaSyA5fRMG0cLNcVrY9y6ve7asBZx-nb7SpXQ",
+ authDomain: "marwar-services.firebaseapp.com",
+ projectId: "marwar-services",
+ storageBucket: "marwar-services.firebasestorage.app",
+ messagingSenderId: "128142477871",
+ appId: "1:128142477871:web:ceb3d1cd38d907cb9e14da"
+};
+
+const app = initializeApp(firebaseConfig);
+window.db = getFirestore(app);
+
+console.log("Firebase Connected");
+</script>
 </body>
 </html>
