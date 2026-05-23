@@ -861,7 +861,7 @@ function calcNetManual() { calcValue(); }
 function calcValue() {
   const net        = parseFloat(document.getElementById('t-net').value)        || 0;
   const rate       = parseFloat(document.getElementById('t-rate').value)       || 0;
-  const commission = parseFloat(document.getElementById('t-commission').value) || 0;
+  const commission = parseFloat(document.getElementById('t-commission').value) || 500;
   const malVal     = net * rate;
   const total      = malVal + commission;
   document.getElementById('t-value').value = total > 0 ? total.toFixed(0) : '';
@@ -900,9 +900,9 @@ function addTrip() {
   if (!truckNo || !driverName || !material) {
     alert('Truck number, driver naam aur material zaroori hain!'); return;
   }
-  const net        = parseFloat(document.getElementById('t-net').value)||0;
-  const rate       = parseFloat(document.getElementById('t-rate').value)||0;
-  const commission = parseFloat(document.getElementById('t-commission').value)||500;
+  const net        = parseFloat(document.getElementById('t-net').value) || 0;
+  const rate       = parseFloat(document.getElementById('t-rate').value) || 0;
+  const commission = parseFloat(document.getElementById('t-commission').value) || 500;
   const malVal     = net * rate;
   const value      = malVal + commission;
 
