@@ -471,9 +471,9 @@ footer span { color:var(--accent2); }
       <div class="sum-sub">Sabka total</div>
     </div>
     <div class="sum-card">
-      <div class="sum-label">Aaj Mal Value</div>
+      <div class="sum-label">Aaj Total Amount</div>
       <div class="sum-value" id="s-todayValue">₹0</div>
-      <div class="sum-sub">Net wt × rate</div>
+      <div class="sum-sub">Mal Value + Commission</div>
     </div>
   </div>
 
@@ -532,12 +532,12 @@ footer span { color:var(--accent2); }
               <input type="number" id="t-rate" placeholder="Auto from rates" min="0" oninput="calcValue()"/>
             </div>
             <div class="form-group">
-              <label>Total Mal Value (₹)</label>
-              <input type="number" id="t-value" placeholder="Auto" readonly/>
+              <label>Commission (₹)</label>
+              <input type="number" id="t-commission" value="500" min="0" oninput="calcValue()"/>
             </div>
             <div class="form-group">
-              <label>Commission (₹)</label>
-              <input type="number" id="t-commission" value="500" min="0"/>
+              <label>Total Amount (₹)</label>
+              <input type="number" id="t-value" placeholder="Auto" readonly/>
             </div>
           </div>
 
@@ -584,8 +584,8 @@ footer span { color:var(--accent2); }
                 <th>Material</th>
                 <th>Net(T)</th>
                 <th>Rate/T</th>
-                <th>Mal Value</th>
                 <th>Commission</th>
+                <th>Total Amount</th>
                 <th>Route</th>
                 <th></th>
               </tr>
@@ -859,10 +859,12 @@ function calcWeights() {
 function calcNetManual() { calcValue(); }
 
 function calcValue() {
-  const net  = parseFloat(document.getElementById('t-net').value)  || 0;
-  const rate = parseFloat(document.getElementById('t-rate').value) || 0;
-  const val  = net * rate;
-  document.getElementById('t-value').value = val > 0 ? val.toFixed(0) : '';
+  const net        = parseFloat(document.getElementById('t-net').value)        || 0;
+  const rate       = parseFloat(document.getElementById('t-rate').value)       || 0;
+  const commission = parseFloat(document.getElementById('t-commission').value) || 0;
+  const malVal     = net * rate;
+  const total      = malVal + commission;
+  document.getElementById('t-value').value = total > 0 ? total.toFixed(0) : '';
 }
 
 // ============ RATES UI ============
@@ -898,16 +900,17 @@ function addTrip() {
   if (!truckNo || !driverName || !material) {
     alert('Truck number, driver naam aur material zaroori hain!'); return;
   }
-  const net   = parseFloat(document.getElementById('t-net').value)||0;
-  const rate  = parseFloat(document.getElementById('t-rate').value)||0;
-  const value = parseFloat(document.getElementById('t-value').value)||0;
+  const net        = parseFloat(document.getElementById('t-net').value)||0;
+  const rate       = parseFloat(document.getElementById('t-rate').value)||0;
+  const commission = parseFloat(document.getElementById('t-commission').value)||500;
+  const malVal     = net * rate;
+  const value      = malVal + commission;
 
   const entry = {
     id: Date.now(),
     truckNo, driverName, material,
     date:   document.getElementById('t-date').value,
-    net, rate, value,
-    commission: parseFloat(document.getElementById('t-commission').value)||500,
+    net, rate, value, commission,
     from: document.getElementById('t-from').value.trim()||'-',
     to:   document.getElementById('t-to').value.trim()||'-',
     note: document.getElementById('t-note').value.trim(),
@@ -1007,16 +1010,16 @@ function renderTrips() {
       <td><span class="badge ${getBadge(r.material)}">${r.material}</span></td>
       <td class="val-blue">${r.net?r.net+'T':'—'}</td>
       <td>${r.rate?'₹'+r.rate:'-'}</td>
-      <td class="val-green">${fmtRs(r.value)}</td>
       <td class="val-red">${fmtRs(r.commission)}</td>
+      <td class="val-green">${fmtRs(r.value)}</td>
       <td style="color:var(--muted);font-size:0.78rem">${r.from}→${r.to}</td>
       <td><button class="btn-del" onclick="delTrip(${r.id})">✕</button></td>
     </tr>`;
   }).join('');
   rows += `<tr class="total-row">
     <td colspan="7" style="text-align:right;padding-right:12px">TOTAL (${filtered.length} trucks)</td>
-    <td class="val-green">₹${tVal.toLocaleString('en-IN')}</td>
     <td class="val-red">₹${tComm.toLocaleString('en-IN')}</td>
+    <td class="val-green">₹${tVal.toLocaleString('en-IN')}</td>
     <td colspan="2"></td>
   </tr>`;
   tbody.innerHTML = rows;
