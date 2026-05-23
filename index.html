@@ -1214,7 +1214,7 @@ function saveRates() {
 }
 
 // ============ ADD TRIP ============
-function addTrip() {
+async function addTrip() {
   const truckNo    = document.getElementById('t-truckNo').value.trim();
   const driverName = document.getElementById('t-driverName').value.trim();
   const material   = document.getElementById('t-material').value.trim();
@@ -1238,6 +1238,12 @@ function addTrip() {
   };
   trips.unshift(entry);
   localStorage.setItem('mst-trips', JSON.stringify(trips));
+await addDoc(
+ collection(window.db,"trips"),
+ entry
+);
+
+console.log("Trip Saved");
   resetTripForm();
   renderTrips();
   updateTripSummary();
@@ -1921,8 +1927,11 @@ checkSession();
 </script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
-
+import {
+ getFirestore,
+ collection,
+ addDoc
+} from "https://www.gstatic.com/firebasejs/12.3.0/firebase-firestore.js";
 const firebaseConfig = {
  apiKey:"AIzaSyA5fRMG0cLNcVrY9y6ve7asBZx-nb7SpXQ",
  authDomain:"marwar-services.firebaseapp.com",
