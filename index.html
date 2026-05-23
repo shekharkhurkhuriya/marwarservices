@@ -350,6 +350,55 @@ footer span { color:var(--accent2); }
 }
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA5fRMGOclNcVrY9y6ve7asBZx-nb7SpXQ",
+  authDomain: "marwar-services.firebaseapp.com",
+  projectId: "marwar-services",
+  storageBucket: "marwar-services.firebasestorage.app",
+  messagingSenderId: "128142477871",
+  appId: "1:128142477871:web:3bf1a147a5fde11d9e14da"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+window._db = db;
+window._col = collection;
+window._doc = doc;
+window._setDoc = setDoc;
+window._getDocs = getDocs;
+window._deleteDoc = deleteDoc;
+window._onSnapshot = onSnapshot;
+window._query = query;
+window._orderBy = orderBy;
+window._dbReady = true;
+
+// Real-time listeners — update arrays and re-render on any change
+function listenCol(colName, arr, renderFn, summaryFn) {
+  const q = _query(collection(db, colName), _orderBy('id', 'desc'));
+  _onSnapshot(q, snap => {
+    arr.length = 0;
+    snap.forEach(d => arr.push(d.data()));
+    renderFn();
+    if (summaryFn) summaryFn();
+  });
+}
+
+// Wait for DOM then start listeners
+window.addEventListener('load', () => {
+  const fbStatus = document.getElementById('fb-status');
+  if (fbStatus) fbStatus.textContent = '✅ Server connected';
+  setTimeout(() => { if (fbStatus) fbStatus.style.display = 'none'; }, 2000);
+  listenCol('trips',    window._trips,    () => { window.renderTrips && renderTrips(); },    () => { window.updateTripSummary && updateTripSummary(); });
+  listenCol('payments', window._payments, () => { window.renderPayments && renderPayments(); }, () => { window.updatePaySummary && updatePaySummary(); });
+  listenCol('finances', window._finances, () => { window.renderFinance && renderFinance(); window.updateTruckList && updateTruckList(); }, null);
+  listenCol('trucks',   window._trucks,   () => { window.renderTrucks && renderTrucks(); window.updateTruckDatalist && updateTruckDatalist(); }, () => { window.updateLedgerSummary && updateLedgerSummary(); });
+  listenCol('ledger',   window._ledger,   () => { window.renderLedger && renderLedger(); window.updateLedgerSummary && updateLedgerSummary(); }, null);
+});
+</script>
 </head>
 <body>
 
@@ -358,6 +407,7 @@ footer span { color:var(--accent2); }
   <div class="login-box">
     <div class="login-logo">MS <span>TRANSPORT</span></div>
     <div class="login-sub">Marwar Services — Secure Login</div>
+    <div id="fb-status" style="font-size:0.7rem;color:#888;margin-bottom:8px;letter-spacing:1px;">🔄 Connecting to server...</div>
     <div class="login-field">
       <label>Username</label>
       <input type="text" id="l-user" placeholder="Enter username" autocomplete="username"/>
@@ -1138,8 +1188,7 @@ footer span { color:var(--accent2); }
 
 <script>
 // ============ STATE ============
-let trips    = JSON.parse(localStorage.getItem('mst-trips')    || '[]');
-let payments = JSON.parse(localStorage.getItem('mst-payments') || '[]');
+// trips and payments declared as window globals above
 let rates    = JSON.parse(localStorage.getItem('mst-rates')    || '{}');
 
 const DEFAULT_MATERIALS = [
@@ -1334,11 +1383,13 @@ function addTrip() {
     to:   document.getElementById('t-to').value.trim()||'-',
     note: document.getElementById('t-note').value.trim(),
   };
-  trips.unshift(entry);
-  localStorage.setItem('mst-trips', JSON.stringify(trips));
+  // Save to Firestore
+  if (window._dbReady) {
+    _setDoc(_doc(window._db, 'trips', String(entry.id)), entry)
+      .catch(e => console.error('Trip save error:', e));
+  }
   resetTripForm();
-  renderTrips();
-  updateTripSummary();
+  // Firestore listener will update UI automatically
 }
 
 function resetTripForm() {
@@ -1370,11 +1421,11 @@ function addPayment() {
     receipt: document.getElementById('d-receipt').value.trim()||'-',
     note:    document.getElementById('d-note').value.trim(),
   };
-  payments.unshift(entry);
-  localStorage.setItem('mst-payments', JSON.stringify(payments));
+  if (window._dbReady) {
+    _setDoc(_doc(window._db, 'payments', String(entry.id)), entry)
+      .catch(e => console.error('Payment save error:', e));
+  }
   resetPayForm();
-  renderPayments();
-  updatePaySummary();
 }
 
 function resetPayForm() {
@@ -1483,27 +1534,28 @@ function renderPayments() {
 // ============ DELETE ============
 function delTrip(id) {
   if(!confirm('Ye trip delete karein?')) return;
-  trips = trips.filter(r=>r.id!==id);
-  localStorage.setItem('mst-trips', JSON.stringify(trips));
-  renderTrips(); updateTripSummary();
+  if (window._dbReady) {
+    _deleteDoc(_doc(window._db, 'trips', String(id)))
+      .catch(e => console.error('Delete error:', e));
+  }
 }
 function delPayment(id) {
   if(!confirm('Ye entry delete karein?')) return;
-  payments = payments.filter(r=>r.id!==id);
-  localStorage.setItem('mst-payments', JSON.stringify(payments));
-  renderPayments(); updatePaySummary();
+  if (window._dbReady) {
+    _deleteDoc(_doc(window._db, 'payments', String(id))).catch(()=>{});
+  }
 }
 function clearTrips() {
   if(!confirm('Saari trip entries delete karein?')) return;
-  trips=[];
-  localStorage.setItem('mst-trips','[]');
-  renderTrips(); updateTripSummary();
+  if (window._dbReady) {
+    trips.forEach(r => _deleteDoc(_doc(window._db, 'trips', String(r.id))).catch(()=>{}));
+  }
 }
 function clearPayments() {
   if(!confirm('Saari payment entries delete karein?')) return;
-  payments=[];
-  localStorage.setItem('mst-payments','[]');
-  renderPayments(); updatePaySummary();
+  if (window._dbReady) {
+    payments.forEach(r => _deleteDoc(_doc(window._db, 'payments', String(r.id))).catch(()=>{}));
+  }
 }
 
 // ============ SUMMARY ============
@@ -1718,13 +1770,12 @@ document.getElementById('chpwd-modal').addEventListener('click', function(e){
 });
 
 // ============ TRUCK LEDGER ============
-let trucks  = JSON.parse(localStorage.getItem('mst-trucks')  || '[]');
-let ledger  = JSON.parse(localStorage.getItem('mst-ledger')  || '[]');
+let trucks  = window._trucks  = [];
+let ledger  = window._ledger  = [];
 
 document.getElementById('tl-pay-date').value = new Date().toISOString().split('T')[0];
 
-function saveTrucks() { localStorage.setItem('mst-trucks', JSON.stringify(trucks)); }
-function saveLedger() { localStorage.setItem('mst-ledger', JSON.stringify(ledger)); }
+// saveTrucks/saveLedger handled by Firestore
 
 function getTruckPaid(truckNo) {
   return ledger.filter(e => e.truckNo === truckNo).reduce((s,e) => s + (e.amount||0), 0);
@@ -1749,22 +1800,24 @@ function addTruck() {
     msg.style.color = 'var(--accent)';
     msg.textContent = '❌ Yeh truck pehle se registered hai!'; return;
   }
-  trucks.push({ truckNo, driverName, salary, mobile, addedOn: new Date().toISOString() });
-  saveTrucks();
+  const truckEntry = { truckNo, driverName, salary, mobile, addedOn: new Date().toISOString(), id: truckNo };
+  if (window._dbReady) {
+    _setDoc(_doc(window._db, 'trucks', truckNo), truckEntry)
+      .catch(e => console.error('Truck save error:', e));
+  }
   ['tl-truckNo','tl-driverName','tl-salary','tl-mobile'].forEach(id => document.getElementById(id).value = '');
   msg.style.color = 'var(--green)';
   msg.textContent = '✅ Truck register ho gaya!';
-  renderTrucks();
-  updateLedgerSummary();
-  updateTruckDatalist();
 }
 
 function deleteTruck(truckNo) {
   if (!confirm(truckNo + ' aur iske saare ledger entries delete karein?')) return;
-  trucks  = trucks.filter(t => t.truckNo !== truckNo);
-  ledger  = ledger.filter(e => e.truckNo !== truckNo);
-  saveTrucks(); saveLedger();
-  renderTrucks(); renderLedger(); updateLedgerSummary(); updateTruckDatalist();
+  if (window._dbReady) {
+    _deleteDoc(_doc(window._db, 'trucks', truckNo)).catch(()=>{});
+    ledger.filter(e => e.truckNo === truckNo).forEach(e =>
+      _deleteDoc(_doc(window._db, 'ledger', String(e.id))).catch(()=>{})
+    );
+  }
 }
 
 function addLedgerEntry() {
@@ -1784,21 +1837,23 @@ function addLedgerEntry() {
     msg.style.color = 'var(--accent)';
     msg.textContent = '❌ Pehle yeh truck register karo!'; return;
   }
-  ledger.unshift({ id: Date.now(), truckNo, date, type, amount, mode, remark });
-  saveLedger();
+  const ledEntry = { id: Date.now(), truckNo, date, type, amount, mode, remark };
+  if (window._dbReady) {
+    _setDoc(_doc(window._db, 'ledger', String(ledEntry.id)), ledEntry)
+      .catch(e => console.error('Ledger save error:', e));
+  }
   ['tl-pay-truck','tl-pay-amount','tl-pay-remark'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('tl-pay-date').value = new Date().toISOString().split('T')[0];
   document.getElementById('tl-pay-type').value = '';
   msg.style.color = 'var(--green)';
   msg.textContent = '✅ Entry save ho gayi!';
-  renderTrucks(); renderLedger(); updateLedgerSummary();
 }
 
 function delLedgerEntry(id) {
   if (!confirm('Ye entry delete karein?')) return;
-  ledger = ledger.filter(e => e.id !== id);
-  saveLedger();
-  renderTrucks(); renderLedger(); updateLedgerSummary();
+  if (window._dbReady) {
+    _deleteDoc(_doc(window._db, 'ledger', String(id))).catch(()=>{});
+  }
 }
 
 function renderTrucks() {
@@ -2064,7 +2119,7 @@ function downloadPayExcel(type) {
 
 
 // ============ TRUCK FINANCES ============
-let finances = JSON.parse(localStorage.getItem('mst-finances') || '[]');
+// finances array already declared as window._finances above
 
 function selectFinance(el, name) {
   document.querySelectorAll('.tf-tag').forEach(t => t.classList.remove('active'));
@@ -2089,11 +2144,11 @@ function addFinance() {
     bank:   document.getElementById('f-bank').value.trim()||'-',
     remark: document.getElementById('f-remark').value.trim(),
   };
-  finances.unshift(entry);
-  localStorage.setItem('mst-finances', JSON.stringify(finances));
+  if (window._dbReady) {
+    _setDoc(_doc(window._db, 'finances', String(entry.id)), entry)
+      .catch(e => console.error('Finance save error:', e));
+  }
   resetFinanceForm();
-  renderFinance();
-  updateTruckList();
 }
 
 function resetFinanceForm() {
@@ -2141,16 +2196,16 @@ function renderFinance() {
 
 function delFinance(id) {
   if(!confirm('Ye finance entry delete karein?')) return;
-  finances = finances.filter(r=>r.id!==id);
-  localStorage.setItem('mst-finances', JSON.stringify(finances));
-  renderFinance(); updateTruckList();
+  if (window._dbReady) {
+    _deleteDoc(_doc(window._db, 'finances', String(id))).catch(()=>{});
+  }
 }
 
 function clearFinance() {
   if(!confirm('Saari finance entries delete karein?')) return;
-  finances=[];
-  localStorage.setItem('mst-finances','[]');
-  renderFinance(); updateTruckList();
+  if (window._dbReady) {
+    finances.forEach(r => _deleteDoc(_doc(window._db, 'finances', String(r.id))).catch(()=>{}));
+  }
 }
 
 function updateTruckList() {
