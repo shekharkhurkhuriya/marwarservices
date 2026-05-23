@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MS Transport — Marwar Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #f4f1eb;
+  --surface: #ffffff;
+  --surface2: #ece8e0;
+  --accent: #b5451b;
+  --accent2: #d4881e;
+  --dark: #1c1c1c;
+  --muted: #888;
+  --border: #d8d2c8;
+  --green: #2e7d52;
+  --blue: #1a5276;
+  --shadow: 0 2px 14px rgba(0,0,0,0.09);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); font-family:'Noto Sans',sans-serif; color:var(--dark); min-height:100vh; }
+
+/* LOGIN OVERLAY */
+#login-overlay {
+  position:fixed; inset:0; z-index:9999;
+  background:var(--dark);
+  display:flex; align-items:center; justify-content:center;
+}
+.login-box {
+  background:var(--surface);
+  border-top: 4px solid var(--accent);
+  box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+  padding: 44px 40px;
+  width: 100%; max-width: 400px;
+  text-align: center;
+}
+.login-logo {
+  font-family:'Rajdhani',sans-serif;
+  font-size:2rem; font-weight:700;
+  letter-spacing:3px; color:var(--dark);
+  margin-bottom:4px;
+}
+.login-logo span { color:var(--accent); }
+.login-sub { font-size:0.7rem; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:32px; }
+.login-field { display:flex; flex-direction:column; gap:5px; margin-bottom:14px; text-align:left; }
+.login-field label { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
+.login-field input {
+  background:var(--bg); border:1px solid var(--border);
+  padding:11px 14px; font-family:'Noto Sans',sans-serif; font-size:0.95rem;
+  color:var(--dark); outline:none; transition:border-color 0.2s; width:100%;
+}
+.login-field input:focus { border-color:var(--accent); }
+.login-btn {
+  width:100%; background:var(--accent); color:#fff; border:none;
+  padding:13px; font-family:'Rajdhani',sans-serif; font-size:1.1rem;
+  font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  cursor:pointer; transition:background 0.2s; margin-top:8px;
+}
+.login-btn:hover { background:#8e3516; }
+.login-err { color:var(--accent); font-size:0.82rem; margin-top:10px; min-height:20px; }
+.login-owner { color:var(--muted); font-size:0.72rem; margin-top:20px; letter-spacing:1px; }
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  display:none; position:fixed; inset:0; z-index:8000;
+  background:rgba(0,0,0,0.6); align-items:center; justify-content:center;
+}
+.modal-overlay.open { display:flex; }
+.modal-box {
+  background:var(--surface); border-top:4px solid var(--accent2);
+  padding:32px; width:100%; max-width:380px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.3);
+}
+.modal-box h3 {
+  font-family:'Rajdhani',sans-serif; font-size:1.2rem;
+  font-weight:700; letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:20px;
+}
+.modal-field { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
+.modal-field label { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
+.modal-field input {
+  background:var(--bg); border:1px solid var(--border);
+  padding:10px 12px; font-family:'Noto Sans',sans-serif; font-size:0.9rem;
+  color:var(--dark); outline:none; transition:border-color 0.2s;
+}
+.modal-field input:focus { border-color:var(--accent2); }
+.modal-btns { display:flex; gap:10px; margin-top:16px; }
+.modal-btns button { flex:1; padding:11px; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; transition:background 0.2s; }
+.btn-modal-ok  { background:var(--accent2); color:#fff; }
+.btn-modal-ok:hover { background:#b5720f; }
+.btn-modal-cancel { background:var(--surface2); color:var(--dark); }
+.btn-modal-cancel:hover { background:#d8d2c8; }
+.modal-msg { font-size:0.82rem; margin-top:10px; min-height:18px; }
+
+/* HEADER */
+header {
+  background: var(--dark);
+  padding: 0 32px;
+  height: 64px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top:0; z-index:200;
+  border-bottom: 3px solid var(--accent);
+}
+.header-left { display:flex; flex-direction:column; }
+.logo-main {
+  font-family:'Rajdhani',sans-serif;
+  font-size:1.5rem; font-weight:700;
+  color:#fff; letter-spacing:3px;
+}
+.logo-main span { color:var(--accent2); }
+.logo-sub { font-size:0.65rem; color:#aaa; letter-spacing:2px; text-transform:uppercase; }
+.header-right { text-align:right; }
+.owner-name { color:var(--accent2); font-size:0.82rem; font-weight:600; letter-spacing:1px; }
+.header-date { color:#777; font-size:0.72rem; margin-top:2px; }
+
+/* TABS */
+.tabs {
+  display:flex; background:var(--dark);
+  border-bottom: 1px solid #333;
+  padding: 0 32px;
+}
+.tab {
+  padding: 13px 28px;
+  font-family:'Rajdhani',sans-serif;
+  font-size:1rem; font-weight:600;
+  letter-spacing:1.5px; text-transform:uppercase;
+  color:#777; cursor:pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+}
+.tab:hover { color:#fff; }
+.tab.active { color:#fff; border-bottom-color: var(--accent2); }
+
+/* PANELS */
+.panel { display:none; }
+.panel.active { display:block; }
+
+.container { max-width:1280px; margin:0 auto; padding:24px; }
+
+/* SUMMARY CARDS */
+.summary-row {
+  display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:24px;
+}
+.sum-card {
+  background:var(--surface); border:1px solid var(--border);
+  padding:18px 20px; box-shadow:var(--shadow);
+  border-top: 3px solid var(--accent);
+}
+.sum-card:nth-child(2){border-top-color:var(--accent2);}
+.sum-card:nth-child(3){border-top-color:var(--green);}
+.sum-card:nth-child(4){border-top-color:var(--blue);}
+.sum-card:nth-child(5){border-top-color:#7d3c98;}
+.sum-label { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:6px; }
+.sum-value { font-family:'Rajdhani',sans-serif; font-size:1.8rem; font-weight:700; line-height:1; }
+.sum-sub { font-size:0.73rem; color:var(--muted); margin-top:3px; }
+
+/* CARD */
+.card { background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow); margin-bottom:20px; }
+.card-head {
+  background:var(--dark); padding:13px 20px;
+  display:flex; align-items:center; gap:10px;
+}
+.card-head h2 {
+  font-family:'Rajdhani',sans-serif; font-size:1rem;
+  font-weight:700; color:#fff; letter-spacing:1.5px; text-transform:uppercase;
+}
+.card-head .dot { width:8px; height:8px; border-radius:50%; background:var(--accent2); flex-shrink:0; }
+.card-body { padding:20px; }
+
+/* RATES PANEL */
+.rates-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.rate-item { display:flex; flex-direction:column; gap:5px; }
+.rate-item label { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
+.rate-input-row { display:flex; align-items:center; gap:0; }
+.rate-prefix {
+  background:var(--surface2); border:1px solid var(--border); border-right:none;
+  padding:9px 10px; font-size:0.82rem; color:var(--muted); white-space:nowrap;
+}
+.rate-input-row input {
+  flex:1; background:var(--bg); border:1px solid var(--border);
+  padding:9px 10px; font-family:'Noto Sans',sans-serif; font-size:0.9rem;
+  color:var(--dark); outline:none; transition:border-color 0.2s;
+}
+.rate-input-row input:focus { border-color:var(--accent); }
+
+/* FORM */
+.two-col { display:grid; grid-template-columns:400px 1fr; gap:20px; }
+.form-section-title {
+  font-size:0.7rem; font-weight:600; text-transform:uppercase;
+  letter-spacing:1.5px; color:var(--accent); margin:14px 0 8px;
+  padding-bottom:4px; border-bottom:1px solid var(--border);
+}
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px; }
+.form-row.three { grid-template-columns:1fr 1fr 1fr; }
+.form-row.single { grid-template-columns:1fr; }
+.form-group { display:flex; flex-direction:column; gap:4px; }
+.form-group label { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background:var(--bg); border:1px solid var(--border);
+  padding:9px 11px; font-family:'Noto Sans',sans-serif; font-size:0.88rem;
+  color:var(--dark); outline:none; transition:border-color 0.2s; width:100%;
+}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus { border-color:var(--accent); }
+.form-group input[readonly] { background:#f0ece5; color:var(--muted); }
+
+/* MATERIAL TAGS */
+.mat-tags { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:12px; }
+.mat-tag {
+  padding:6px 13px; font-size:0.78rem; font-weight:600;
+  border:1px solid var(--border); cursor:pointer;
+  transition:all 0.15s; user-select:none; background:var(--surface2);
+}
+.mat-tag:hover { border-color:#999; }
+.mat-tag.active { color:#fff !important; }
+.mt-gitti    { } .mt-gitti.active    { background:#555; border-color:#555; }
+.mt-gypsum   { } .mt-gypsum.active   { background:#b8860b; border-color:#b8860b; }
+.mt-coal     { } .mt-coal.active     { background:#1a1a1a; border-color:#1a1a1a; }
+.mt-chinaclay{ } .mt-chinaclay.active{ background:#4a7c8e; border-color:#4a7c8e; }
+.mt-ocher    { } .mt-ocher.active    { background:#b5451b; border-color:#b5451b; }
+.mt-limestone{ } .mt-limestone.active{ background:#6d7a5e; border-color:#6d7a5e; }
+
+/* CALC BOX */
+.calc-box {
+  background:#fff8f0; border:1px dashed var(--accent2);
+  padding:14px 16px; margin:12px 0;
+  display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;
+}
+.calc-item { text-align:center; }
+.calc-label { font-size:0.68rem; text-transform:uppercase; letter-spacing:1px; color:var(--muted); margin-bottom:3px; }
+.calc-val {
+  font-family:'Rajdhani',sans-serif; font-size:1.4rem; font-weight:700; color:var(--dark);
+}
+.calc-val.highlight { color:var(--accent); }
+.calc-val.green { color:var(--green); }
+
+.btn-submit {
+  width:100%; background:var(--accent); color:#fff; border:none;
+  padding:13px; font-family:'Rajdhani',sans-serif; font-size:1.1rem;
+  font-weight:700; letter-spacing:2px; text-transform:uppercase;
+  cursor:pointer; transition:background 0.2s, transform 0.1s; margin-top:8px;
+}
+.btn-submit:hover { background:#8e3516; transform:translateY(-1px); }
+.btn-submit.blue { background:var(--blue); }
+.btn-submit.blue:hover { background:#123e5e; }
+
+/* TABLE */
+.tbl-toolbar {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:12px 16px; border-bottom:1px solid var(--border); background:var(--surface2);
+  flex-wrap:wrap; gap:8px;
+}
+.filter-input {
+  background:var(--surface); border:1px solid var(--border);
+  padding:7px 12px; font-size:0.84rem; font-family:'Noto Sans',sans-serif;
+  outline:none; width:200px; transition:border-color 0.2s;
+}
+.filter-input:focus { border-color:var(--accent); }
+.btn-sm {
+  background:none; border:1px solid var(--border); color:var(--muted);
+  padding:7px 14px; font-size:0.78rem; cursor:pointer;
+  font-family:'Noto Sans',sans-serif; transition:all 0.15s;
+}
+.btn-sm:hover { background:var(--dark); color:#fff; border-color:var(--dark); }
+.btn-sm.red:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:0.82rem; }
+thead tr { background:var(--dark); color:#fff; }
+thead th {
+  padding:10px 12px; text-align:left;
+  font-family:'Rajdhani',sans-serif; font-size:0.82rem;
+  font-weight:600; letter-spacing:1px; text-transform:uppercase;
+  white-space:nowrap;
+}
+tbody tr { border-bottom:1px solid var(--border); transition:background 0.12s; }
+tbody tr:hover { background:#f9f5ef; }
+tbody td { padding:9px 12px; white-space:nowrap; }
+
+.badge {
+  display:inline-block; padding:2px 9px;
+  font-size:0.7rem; font-weight:600;
+  text-transform:uppercase; letter-spacing:0.5px; color:#fff;
+}
+.b-gitti    { background:#555; }
+.b-gypsum   { background:#b8860b; }
+.b-coal     { background:#1a1a1a; }
+.b-chinaclay{ background:#4a7c8e; }
+.b-ocher    { background:#b5451b; }
+.b-limestone{ background:#6d7a5e; }
+.b-default  { background:#666; }
+.b-advance  { background:#1a5276; }
+.b-fuel     { background:#922b21; }
+.b-repair   { background:#784212; }
+.b-toll     { background:#1e8449; }
+.b-other    { background:#555; }
+
+.val-green { color:var(--green); font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:700; }
+.val-red   { color:var(--accent); font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:700; }
+.val-blue  { color:var(--blue);  font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:700; }
+
+.total-row td { font-weight:700; background:#ece8de; border-top:2px solid var(--dark); font-family:'Rajdhani',sans-serif; }
+.no-records { text-align:center; padding:44px; color:var(--muted); font-size:0.88rem; }
+
+.btn-del { background:none; border:1px solid #ddd; color:var(--muted); padding:3px 9px; font-size:0.75rem; cursor:pointer; transition:all 0.12s; }
+.btn-del:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+
+/* DRIVER PAYMENT SPECIFIC */
+.exp-tags { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px; }
+.exp-tag {
+  padding:5px 12px; font-size:0.78rem; font-weight:600;
+  border:1px solid var(--border); cursor:pointer; transition:all 0.15s;
+  background:var(--surface2); user-select:none;
+}
+.exp-tag.active { color:#fff; }
+.et-advance.active { background:var(--blue); border-color:var(--blue); }
+.et-fuel.active    { background:#922b21; border-color:#922b21; }
+.et-repair.active  { background:#784212; border-color:#784212; }
+.et-toll.active    { background:#1e8449; border-color:#1e8449; }
+.et-other.active   { background:#555; border-color:#555; }
+
+/* FOOTER */
+footer {
+  background:var(--dark); border-top:3px solid var(--accent);
+  padding:16px 32px; text-align:center;
+  color:#666; font-size:0.75rem; letter-spacing:1px;
+  margin-top:20px;
+}
+footer span { color:var(--accent2); }
+
+@media(max-width:900px){
+  .summary-row { grid-template-columns:1fr 1fr; }
+  .two-col { grid-template-columns:1fr; }
+  .rates-grid { grid-template-columns:1fr 1fr; }
+  .calc-box { grid-template-columns:1fr; }
+  .tabs { padding:0 12px; overflow-x:auto; }
+  .tab { padding:12px 16px; font-size:0.85rem; white-space:nowrap; }
+}
+@media(max-width:540px){
+  .summary-row { grid-template-columns:1fr 1fr; }
+  .form-row { grid-template-columns:1fr; }
+  .form-row.three { grid-template-columns:1fr; }
+  header { padding:0 16px; }
+  .container { padding:14px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay">
+  <div class="login-box">
+    <div class="login-logo">MS <span>TRANSPORT</span></div>
+    <div class="login-sub">Marwar Services — Secure Login</div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="l-user" placeholder="Enter username" autocomplete="username"/>
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="l-pass" placeholder="Enter password" autocomplete="current-password"
+        onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔐 Login Karo</button>
+    <div class="login-err" id="login-err"></div>
+    <div class="login-owner">👤 Pukhraj Chhaba &nbsp;|&nbsp; Marwar Services</div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div class="modal-overlay" id="chpwd-modal">
+  <div class="modal-box">
+    <h3>🔑 Password Change Karo</h3>
+    <div class="modal-field">
+      <label>Current Password</label>
+      <input type="password" id="cp-current" placeholder="Purana password"/>
+    </div>
+    <div class="modal-field">
+      <label>New Password</label>
+      <input type="password" id="cp-new" placeholder="Naya password"/>
+    </div>
+    <div class="modal-field">
+      <label>Confirm New Password</label>
+      <input type="password" id="cp-confirm" placeholder="Dobara naya password"/>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closeChPwd()">Cancel</button>
+      <button class="btn-modal-ok" onclick="changePassword()">Save Karo</button>
+    </div>
+    <div class="modal-msg" id="cp-msg"></div>
+  </div>
+</div>
+
+<header>
+  <div class="header-left">
+    <div class="logo-main">MS <span>TRANSPORT</span></div>
+    <div class="logo-sub">Marwar Services — Raw Material Transport</div>
+  </div>
+  <div class="header-right">
+    <div class="owner-name">👤 Pukhraj Chhaba</div>
+    <div class="header-date" id="headerDate"></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('trip')">🚛 Trip Entry</div>
+  <div class="tab" onclick="switchTab('driver')">💰 Driver Payment</div>
+  <div class="tab" onclick="switchTab('rates')">⚙️ Material Rates</div>
+</div>
+
+<!-- ============ PANEL 1: TRIP ENTRY ============ -->
+<div class="panel active" id="panel-trip">
+<div class="container">
+
+  <div class="summary-row">
+    <div class="sum-card">
+      <div class="sum-label">Aaj ke Trucks</div>
+      <div class="sum-value" id="s-todayTrucks">0</div>
+      <div class="sum-sub">Aaj ki entries</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Total Trucks</div>
+      <div class="sum-value" id="s-totalTrucks">0</div>
+      <div class="sum-sub">Saari entries</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Aaj Commission</div>
+      <div class="sum-value" id="s-todayComm">₹0</div>
+      <div class="sum-sub">@₹500 per truck</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Total Commission</div>
+      <div class="sum-value" id="s-totalComm">₹0</div>
+      <div class="sum-sub">Sabka total</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Aaj Mal Value</div>
+      <div class="sum-value" id="s-todayValue">₹0</div>
+      <div class="sum-sub">Net wt × rate</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+
+    <!-- FORM LEFT -->
+    <div>
+      <div class="card">
+        <div class="card-head"><div class="dot"></div><h2>Nayi Trip Entry</h2></div>
+        <div class="card-body">
+
+          <div class="form-section-title">Material Chuniye</div>
+          <div class="mat-tags">
+            <div class="mat-tag mt-gitti"     onclick="selectMat(this,'Gitti','trip')">🪨 Gitti</div>
+            <div class="mat-tag mt-gypsum"    onclick="selectMat(this,'Gypsum','trip')">🟡 Gypsum</div>
+            <div class="mat-tag mt-coal"      onclick="selectMat(this,'Coal','trip')">⚫ Coal</div>
+            <div class="mat-tag mt-chinaclay" onclick="selectMat(this,'China Clay','trip')">🔵 China Clay</div>
+            <div class="mat-tag mt-ocher"     onclick="selectMat(this,'Red Ocher','trip')">🔴 Red Ocher</div>
+            <div class="mat-tag mt-limestone" onclick="selectMat(this,'Limestone','trip')">⬜ Limestone</div>
+          </div>
+
+          <div class="form-section-title">Truck Details</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Truck Number *</label>
+              <input type="text" id="t-truckNo" placeholder="RJ14 GA 1234"/>
+            </div>
+            <div class="form-group">
+              <label>Driver Ka Naam *</label>
+              <input type="text" id="t-driverName" placeholder="Ramesh Kumar"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Material *</label>
+              <input type="text" id="t-material" placeholder="Gitti / Coal..."/>
+            </div>
+            <div class="form-group">
+              <label>Tarikh</label>
+              <input type="date" id="t-date"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">Weight Details</div>
+          <div class="form-row three">
+            <div class="form-group">
+              <label>Gross Wt (Ton) *</label>
+              <input type="number" id="t-gross" placeholder="35" min="0" step="0.01" oninput="calcWeights()"/>
+            </div>
+            <div class="form-group">
+              <label>Truck (Tare) Wt (Ton)</label>
+              <input type="number" id="t-tare" placeholder="12" min="0" step="0.01" oninput="calcWeights()"/>
+            </div>
+            <div class="form-group">
+              <label>Net Weight (Ton)</label>
+              <input type="number" id="t-net" placeholder="23" min="0" step="0.01" oninput="calcNetManual()" readonly/>
+            </div>
+          </div>
+
+          <div class="calc-box">
+            <div class="calc-item">
+              <div class="calc-label">Gross Weight</div>
+              <div class="calc-val" id="c-gross">— T</div>
+            </div>
+            <div class="calc-item">
+              <div class="calc-label">Truck Weight</div>
+              <div class="calc-val" id="c-tare">— T</div>
+            </div>
+            <div class="calc-item">
+              <div class="calc-label">Net (Mal) Weight</div>
+              <div class="calc-val highlight" id="c-net">— T</div>
+            </div>
+          </div>
+
+          <div class="form-section-title">Rate & Value</div>
+          <div class="form-row three">
+            <div class="form-group">
+              <label>Per Ton Rate (₹)</label>
+              <input type="number" id="t-rate" placeholder="Auto from rates" min="0" oninput="calcValue()"/>
+            </div>
+            <div class="form-group">
+              <label>Total Mal Value (₹)</label>
+              <input type="number" id="t-value" placeholder="Auto" readonly/>
+            </div>
+            <div class="form-group">
+              <label>Commission (₹)</label>
+              <input type="number" id="t-commission" value="500" min="0"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">Route</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kahan Se (From)</label>
+              <input type="text" id="t-from" placeholder="Nagaur"/>
+            </div>
+            <div class="form-group">
+              <label>Kahan Tak (To)</label>
+              <input type="text" id="t-to" placeholder="Kota"/>
+            </div>
+          </div>
+          <div class="form-row single">
+            <div class="form-group">
+              <label>Note</label>
+              <input type="text" id="t-note" placeholder="Koi khaas baat..."/>
+            </div>
+          </div>
+
+          <button class="btn-submit" onclick="addTrip()">🚛 Trip Entry Save Karo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TABLE RIGHT -->
+    <div>
+      <div class="card">
+        <div class="card-head"><div class="dot"></div><h2>Trip Records</h2>
+          <div style="margin-left:auto;display:flex;gap:6px;align-items:center;">
+            <input class="filter-input" id="t-search" placeholder="Search truck/driver..." oninput="renderTrips()"/>
+            <button class="btn-sm red" onclick="clearTrips()">Clear All</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tarikh</th>
+                <th>Truck No.</th>
+                <th>Driver</th>
+                <th>Material</th>
+                <th>Gross(T)</th>
+                <th>Tare(T)</th>
+                <th>Net(T)</th>
+                <th>Rate/T</th>
+                <th>Mal Value</th>
+                <th>Commission</th>
+                <th>Route</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="trips-body">
+              <tr><td colspan="13" class="no-records">Abhi koi trip entry nahi.<br/>Form bhar ke save karo.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ PANEL 2: DRIVER PAYMENT ============ -->
+<div class="panel" id="panel-driver">
+<div class="container">
+
+  <div class="summary-row">
+    <div class="sum-card">
+      <div class="sum-label">Total Advance</div>
+      <div class="sum-value" id="dp-totalAdv">₹0</div>
+      <div class="sum-sub">Drivers ko diya</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Total Fuel</div>
+      <div class="sum-value" id="dp-totalFuel">₹0</div>
+      <div class="sum-sub">Diesel/Petrol</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Total Repair</div>
+      <div class="sum-value" id="dp-totalRepair">₹0</div>
+      <div class="sum-sub">Maintenance</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Toll / Other</div>
+      <div class="sum-value" id="dp-totalOther">₹0</div>
+      <div class="sum-sub">Toll + misc</div>
+    </div>
+    <div class="sum-card">
+      <div class="sum-label">Total Kharcha</div>
+      <div class="sum-value" id="dp-totalAll">₹0</div>
+      <div class="sum-sub">Sabka total</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <div class="card">
+        <div class="card-head"><div class="dot"></div><h2>Driver Payment / Truck Kharcha</h2></div>
+        <div class="card-body">
+
+          <div class="form-section-title">Truck & Driver</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Truck Number *</label>
+              <input type="text" id="d-truckNo" placeholder="RJ14 GA 1234"/>
+            </div>
+            <div class="form-group">
+              <label>Driver Ka Naam *</label>
+              <input type="text" id="d-driverName" placeholder="Ramesh Kumar"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tarikh *</label>
+              <input type="date" id="d-date"/>
+            </div>
+            <div class="form-group">
+              <label>Trip Reference (Optional)</label>
+              <input type="text" id="d-tripRef" placeholder="Trip ID ya truck no."/>
+            </div>
+          </div>
+
+          <div class="form-section-title">Kharcha Ka Type</div>
+          <div class="exp-tags">
+            <div class="exp-tag et-advance" onclick="selectExp(this,'Advance')">💵 Advance</div>
+            <div class="exp-tag et-fuel"    onclick="selectExp(this,'Fuel')">⛽ Fuel</div>
+            <div class="exp-tag et-repair"  onclick="selectExp(this,'Repair')">🔧 Repair</div>
+            <div class="exp-tag et-toll"    onclick="selectExp(this,'Toll')">🛣️ Toll</div>
+            <div class="exp-tag et-other"   onclick="selectExp(this,'Other')">📦 Other</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kharcha Type *</label>
+              <input type="text" id="d-type" placeholder="Advance / Fuel..."/>
+            </div>
+            <div class="form-group">
+              <label>Amount (₹) *</label>
+              <input type="number" id="d-amount" placeholder="2000" min="0"/>
+            </div>
+          </div>
+
+          <div class="form-section-title">Additional Details</div>
+          <div class="form-row three">
+            <div class="form-group">
+              <label>Fuel Litres</label>
+              <input type="number" id="d-litres" placeholder="50 L" min="0"/>
+            </div>
+            <div class="form-group">
+              <label>Odometer (KM)</label>
+              <input type="number" id="d-odo" placeholder="12500" min="0"/>
+            </div>
+            <div class="form-group">
+              <label>Receipt No.</label>
+              <input type="text" id="d-receipt" placeholder="RCP-001"/>
+            </div>
+          </div>
+          <div class="form-row single">
+            <div class="form-group">
+              <label>Note / Reason</label>
+              <input type="text" id="d-note" placeholder="Kharche ki wajah..."/>
+            </div>
+          </div>
+
+          <button class="btn-submit blue" onclick="addPayment()">💰 Kharcha Save Karo</button>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <div class="card-head"><div class="dot"></div><h2>Payment / Kharcha Records</h2>
+          <div style="margin-left:auto;display:flex;gap:6px;align-items:center;">
+            <input class="filter-input" id="d-search" placeholder="Search truck/driver..." oninput="renderPayments()"/>
+            <button class="btn-sm red" onclick="clearPayments()">Clear All</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tarikh</th>
+                <th>Truck No.</th>
+                <th>Driver</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Fuel (L)</th>
+                <th>Odometer</th>
+                <th>Receipt</th>
+                <th>Note</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="payments-body">
+              <tr><td colspan="11" class="no-records">Koi payment entry nahi.<br/>Form bhar ke save karo.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ PANEL 3: MATERIAL RATES ============ -->
+<div class="panel" id="panel-rates">
+<div class="container">
+  <div class="card" style="max-width:700px;margin:0 auto;">
+    <div class="card-head"><div class="dot"></div><h2>Material Per Ton Rates Set Karo</h2></div>
+    <div class="card-body">
+      <p style="color:var(--muted);font-size:0.85rem;margin-bottom:18px;">Yahan har material ka per ton rate set karo. Trip entry mein material select karte hi rate auto fill ho jaayega.</p>
+      <div class="rates-grid" id="rates-grid"></div>
+      <button class="btn-submit" style="margin-top:20px;max-width:300px;" onclick="saveRates()">💾 Rates Save Karo</button>
+      <div id="rates-saved" style="color:var(--green);font-size:0.85rem;margin-top:10px;display:none;">✅ Rates save ho gaye!</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<footer>
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+    <div>
+      <strong style="color:#fff;font-family:'Rajdhani',sans-serif;letter-spacing:2px;">MS TRANSPORT</strong>
+      &nbsp;|&nbsp; Marwar Services &nbsp;|&nbsp; Owner: <span>Pukhraj Chhaba</span>
+      &nbsp;|&nbsp; Raw Material Transport — Rajasthan
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="openChPwd()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#d4881e';this.style.color='#d4881e'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">🔑 Password Change</button>
+      <button onclick="doLogout()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#b5451b';this.style.color='#b5451b'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">🚪 Logout</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+// ============ STATE ============
+let trips    = JSON.parse(localStorage.getItem('mst-trips')    || '[]');
+let payments = JSON.parse(localStorage.getItem('mst-payments') || '[]');
+let rates    = JSON.parse(localStorage.getItem('mst-rates')    || '{}');
+
+const MATERIALS = [
+  { key:'gitti',     label:'Gitti',      icon:'🪨' },
+  { key:'gypsum',    label:'Gypsum',     icon:'🟡' },
+  { key:'coal',      label:'Coal',       icon:'⚫' },
+  { key:'chinaclay', label:'China Clay', icon:'🔵' },
+  { key:'ocher',     label:'Red Ocher',  icon:'🔴' },
+  { key:'limestone', label:'Limestone',  icon:'⬜' },
+];
+
+// ============ INIT ============
+const today = new Date();
+document.getElementById('headerDate').textContent =
+  today.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+document.getElementById('t-date').value = today.toISOString().split('T')[0];
+document.getElementById('d-date').value = today.toISOString().split('T')[0];
+
+buildRatesUI();
+renderTrips();
+renderPayments();
+updateTripSummary();
+updatePaySummary();
+
+// ============ TABS ============
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+// ============ MATERIAL SELECT ============
+function selectMat(el, name, ctx) {
+  document.querySelectorAll('.mat-tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('t-material').value = name;
+  const key = matKey(name);
+  if (rates[key]) {
+    document.getElementById('t-rate').value = rates[key];
+    calcValue();
+  }
+}
+
+function selectExp(el, name) {
+  document.querySelectorAll('.exp-tag').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('d-type').value = name;
+}
+
+function matKey(name) {
+  const n = name.toLowerCase().replace(/\s/g,'');
+  if (n.includes('gitti'))    return 'gitti';
+  if (n.includes('gypsum'))   return 'gypsum';
+  if (n.includes('coal'))     return 'coal';
+  if (n.includes('china'))    return 'chinaclay';
+  if (n.includes('ocher') || n.includes('ochre')) return 'ocher';
+  if (n.includes('limestone'))return 'limestone';
+  return n;
+}
+
+// ============ WEIGHT CALC ============
+function calcWeights() {
+  const gross = parseFloat(document.getElementById('t-gross').value) || 0;
+  const tare  = parseFloat(document.getElementById('t-tare').value)  || 0;
+  const net   = gross > 0 ? Math.max(0, gross - tare) : 0;
+
+  document.getElementById('t-net').value  = net > 0 ? net.toFixed(2) : '';
+  document.getElementById('c-gross').textContent = gross ? gross.toFixed(2)+' T' : '— T';
+  document.getElementById('c-tare').textContent  = tare  ? tare.toFixed(2)+' T'  : '— T';
+  document.getElementById('c-net').textContent   = net   ? net.toFixed(2)+' T'   : '— T';
+  calcValue();
+}
+
+function calcNetManual() { calcValue(); }
+
+function calcValue() {
+  const net  = parseFloat(document.getElementById('t-net').value)  || 0;
+  const rate = parseFloat(document.getElementById('t-rate').value) || 0;
+  const val  = net * rate;
+  document.getElementById('t-value').value = val > 0 ? val.toFixed(0) : '';
+}
+
+// ============ RATES UI ============
+function buildRatesUI() {
+  const grid = document.getElementById('rates-grid');
+  grid.innerHTML = MATERIALS.map(m => `
+    <div class="rate-item">
+      <label>${m.icon} ${m.label}</label>
+      <div class="rate-input-row">
+        <span class="rate-prefix">₹/Ton</span>
+        <input type="number" id="rate-${m.key}" value="${rates[m.key]||''}" placeholder="0" min="0"
+          oninput="rates['${m.key}']=this.value"/>
+      </div>
+    </div>`).join('');
+}
+
+function saveRates() {
+  MATERIALS.forEach(m => {
+    const v = document.getElementById('rate-'+m.key).value;
+    rates[m.key] = v ? parseFloat(v) : 0;
+  });
+  localStorage.setItem('mst-rates', JSON.stringify(rates));
+  const msg = document.getElementById('rates-saved');
+  msg.style.display = 'block';
+  setTimeout(() => msg.style.display='none', 2500);
+}
+
+// ============ ADD TRIP ============
+function addTrip() {
+  const truckNo    = document.getElementById('t-truckNo').value.trim();
+  const driverName = document.getElementById('t-driverName').value.trim();
+  const material   = document.getElementById('t-material').value.trim();
+  if (!truckNo || !driverName || !material) {
+    alert('Truck number, driver naam aur material zaroori hain!'); return;
+  }
+  const gross = parseFloat(document.getElementById('t-gross').value)||0;
+  const tare  = parseFloat(document.getElementById('t-tare').value)||0;
+  const net   = parseFloat(document.getElementById('t-net').value)||0;
+  const rate  = parseFloat(document.getElementById('t-rate').value)||0;
+  const value = parseFloat(document.getElementById('t-value').value)||0;
+
+  const entry = {
+    id: Date.now(),
+    truckNo, driverName, material,
+    date:   document.getElementById('t-date').value,
+    gross, tare, net, rate, value,
+    commission: parseFloat(document.getElementById('t-commission').value)||500,
+    from: document.getElementById('t-from').value.trim()||'-',
+    to:   document.getElementById('t-to').value.trim()||'-',
+    note: document.getElementById('t-note').value.trim(),
+  };
+  trips.unshift(entry);
+  localStorage.setItem('mst-trips', JSON.stringify(trips));
+  resetTripForm();
+  renderTrips();
+  updateTripSummary();
+}
+
+function resetTripForm() {
+  ['t-truckNo','t-driverName','t-material','t-gross','t-tare','t-net',
+   't-rate','t-value','t-from','t-to','t-note'].forEach(id=>{
+    document.getElementById(id).value='';
+  });
+  document.getElementById('t-commission').value=500;
+  document.getElementById('t-date').value=new Date().toISOString().split('T')[0];
+  document.querySelectorAll('.mat-tag').forEach(t=>t.classList.remove('active'));
+  ['c-gross','c-tare','c-net'].forEach(id=>document.getElementById(id).textContent='— T');
+}
+
+// ============ ADD PAYMENT ============
+function addPayment() {
+  const truckNo    = document.getElementById('d-truckNo').value.trim();
+  const driverName = document.getElementById('d-driverName').value.trim();
+  const type       = document.getElementById('d-type').value.trim();
+  const amount     = parseFloat(document.getElementById('d-amount').value)||0;
+  if (!truckNo || !driverName || !type || !amount) {
+    alert('Truck, driver, type aur amount zaroori hain!'); return;
+  }
+  const entry = {
+    id: Date.now(),
+    truckNo, driverName, type, amount,
+    date:    document.getElementById('d-date').value,
+    tripRef: document.getElementById('d-tripRef').value.trim(),
+    litres:  document.getElementById('d-litres').value||'-',
+    odo:     document.getElementById('d-odo').value||'-',
+    receipt: document.getElementById('d-receipt').value.trim()||'-',
+    note:    document.getElementById('d-note').value.trim(),
+  };
+  payments.unshift(entry);
+  localStorage.setItem('mst-payments', JSON.stringify(payments));
+  resetPayForm();
+  renderPayments();
+  updatePaySummary();
+}
+
+function resetPayForm() {
+  ['d-truckNo','d-driverName','d-type','d-amount','d-tripRef',
+   'd-litres','d-odo','d-receipt','d-note'].forEach(id=>{
+    document.getElementById(id).value='';
+  });
+  document.getElementById('d-date').value=new Date().toISOString().split('T')[0];
+  document.querySelectorAll('.exp-tag').forEach(t=>t.classList.remove('active'));
+}
+
+// ============ RENDER TRIPS ============
+function getBadge(mat) {
+  const k = matKey(mat);
+  const map = {gitti:'b-gitti',gypsum:'b-gypsum',coal:'b-coal',chinaclay:'b-chinaclay',ocher:'b-ocher',limestone:'b-limestone'};
+  return map[k]||'b-default';
+}
+
+function getExpBadge(type) {
+  const t = type.toLowerCase();
+  if(t.includes('advance')) return 'b-advance';
+  if(t.includes('fuel'))    return 'b-fuel';
+  if(t.includes('repair'))  return 'b-repair';
+  if(t.includes('toll'))    return 'b-toll';
+  return 'b-other';
+}
+
+function fmtDate(d) { return d ? new Date(d).toLocaleDateString('en-IN') : '-'; }
+function fmtRs(v)   { return v ? '₹'+Number(v).toLocaleString('en-IN') : '—'; }
+function fmtT(v)    { return v ? v.toFixed(2)+'T' : '—'; }
+
+function renderTrips() {
+  const q = document.getElementById('t-search').value.toLowerCase();
+  const filtered = trips.filter(r =>
+    r.truckNo.toLowerCase().includes(q)||
+    r.driverName.toLowerCase().includes(q)||
+    r.material.toLowerCase().includes(q)
+  );
+  const tbody = document.getElementById('trips-body');
+  if (!filtered.length) {
+    tbody.innerHTML=`<tr><td colspan="13" class="no-records">Koi trip nahi mili.</td></tr>`; return;
+  }
+  let tComm=0, tVal=0;
+  let rows = filtered.map((r,i)=>{
+    tComm += r.commission||0;
+    tVal  += r.value||0;
+    return `<tr>
+      <td style="color:var(--muted);font-size:0.75rem">${filtered.length-i}</td>
+      <td>${fmtDate(r.date)}</td>
+      <td><strong>${r.truckNo}</strong></td>
+      <td>${r.driverName}</td>
+      <td><span class="badge ${getBadge(r.material)}">${r.material}</span></td>
+      <td>${r.gross?r.gross+'T':'—'}</td>
+      <td>${r.tare?r.tare+'T':'—'}</td>
+      <td class="val-blue">${r.net?r.net+'T':'—'}</td>
+      <td>${r.rate?'₹'+r.rate:'-'}</td>
+      <td class="val-green">${fmtRs(r.value)}</td>
+      <td class="val-red">${fmtRs(r.commission)}</td>
+      <td style="color:var(--muted);font-size:0.78rem">${r.from}→${r.to}</td>
+      <td><button class="btn-del" onclick="delTrip(${r.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+  rows += `<tr class="total-row">
+    <td colspan="9" style="text-align:right;padding-right:12px">TOTAL (${filtered.length} trucks)</td>
+    <td class="val-green">₹${tVal.toLocaleString('en-IN')}</td>
+    <td class="val-red">₹${tComm.toLocaleString('en-IN')}</td>
+    <td colspan="2"></td>
+  </tr>`;
+  tbody.innerHTML = rows;
+}
+
+function renderPayments() {
+  const q = document.getElementById('d-search').value.toLowerCase();
+  const filtered = payments.filter(r =>
+    r.truckNo.toLowerCase().includes(q)||
+    r.driverName.toLowerCase().includes(q)||
+    r.type.toLowerCase().includes(q)
+  );
+  const tbody = document.getElementById('payments-body');
+  if (!filtered.length) {
+    tbody.innerHTML=`<tr><td colspan="11" class="no-records">Koi payment entry nahi.</td></tr>`; return;
+  }
+  let total=0;
+  let rows = filtered.map((r,i)=>{
+    total += r.amount||0;
+    return `<tr>
+      <td style="color:var(--muted);font-size:0.75rem">${filtered.length-i}</td>
+      <td>${fmtDate(r.date)}</td>
+      <td><strong>${r.truckNo}</strong></td>
+      <td>${r.driverName}</td>
+      <td><span class="badge ${getExpBadge(r.type)}">${r.type}</span></td>
+      <td class="val-red">${fmtRs(r.amount)}</td>
+      <td>${r.litres!=='-'?r.litres+' L':'—'}</td>
+      <td>${r.odo!=='-'?r.odo+' km':'—'}</td>
+      <td>${r.receipt||'—'}</td>
+      <td style="color:var(--muted);font-size:0.78rem">${r.note||'—'}</td>
+      <td><button class="btn-del" onclick="delPayment(${r.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+  rows += `<tr class="total-row">
+    <td colspan="5" style="text-align:right;padding-right:12px">TOTAL (${filtered.length} entries)</td>
+    <td class="val-red">₹${total.toLocaleString('en-IN')}</td>
+    <td colspan="5"></td>
+  </tr>`;
+  tbody.innerHTML = rows;
+}
+
+// ============ DELETE ============
+function delTrip(id) {
+  if(!confirm('Ye trip delete karein?')) return;
+  trips = trips.filter(r=>r.id!==id);
+  localStorage.setItem('mst-trips', JSON.stringify(trips));
+  renderTrips(); updateTripSummary();
+}
+function delPayment(id) {
+  if(!confirm('Ye entry delete karein?')) return;
+  payments = payments.filter(r=>r.id!==id);
+  localStorage.setItem('mst-payments', JSON.stringify(payments));
+  renderPayments(); updatePaySummary();
+}
+function clearTrips() {
+  if(!confirm('Saari trip entries delete karein?')) return;
+  trips=[];
+  localStorage.setItem('mst-trips','[]');
+  renderTrips(); updateTripSummary();
+}
+function clearPayments() {
+  if(!confirm('Saari payment entries delete karein?')) return;
+  payments=[];
+  localStorage.setItem('mst-payments','[]');
+  renderPayments(); updatePaySummary();
+}
+
+// ============ SUMMARY ============
+function updateTripSummary() {
+  const todayStr = new Date().toISOString().split('T')[0];
+  const tod = trips.filter(r=>r.date===todayStr);
+  document.getElementById('s-todayTrucks').textContent = tod.length;
+  document.getElementById('s-totalTrucks').textContent = trips.length;
+  document.getElementById('s-todayComm').textContent   = '₹'+tod.reduce((s,r)=>s+(r.commission||0),0).toLocaleString('en-IN');
+  document.getElementById('s-totalComm').textContent   = '₹'+trips.reduce((s,r)=>s+(r.commission||0),0).toLocaleString('en-IN');
+  document.getElementById('s-todayValue').textContent  = '₹'+tod.reduce((s,r)=>s+(r.value||0),0).toLocaleString('en-IN');
+}
+
+function updatePaySummary() {
+  const adv  = payments.filter(r=>r.type.toLowerCase().includes('advance')).reduce((s,r)=>s+r.amount,0);
+  const fuel = payments.filter(r=>r.type.toLowerCase().includes('fuel')).reduce((s,r)=>s+r.amount,0);
+  const rep  = payments.filter(r=>r.type.toLowerCase().includes('repair')).reduce((s,r)=>s+r.amount,0);
+  const oth  = payments.filter(r=>!r.type.toLowerCase().includes('advance')&&!r.type.toLowerCase().includes('fuel')&&!r.type.toLowerCase().includes('repair')).reduce((s,r)=>s+r.amount,0);
+  document.getElementById('dp-totalAdv').textContent    = '₹'+adv.toLocaleString('en-IN');
+  document.getElementById('dp-totalFuel').textContent   = '₹'+fuel.toLocaleString('en-IN');
+  document.getElementById('dp-totalRepair').textContent = '₹'+rep.toLocaleString('en-IN');
+  document.getElementById('dp-totalOther').textContent  = '₹'+oth.toLocaleString('en-IN');
+  document.getElementById('dp-totalAll').textContent    = '₹'+payments.reduce((s,r)=>s+r.amount,0).toLocaleString('en-IN');
+}
+
+// ============ LOGIN SYSTEM ============
+const DEFAULT_USER = 'Marwar Services';
+const DEFAULT_PASS = 'MS@123';
+
+function getStoredPass() {
+  return localStorage.getItem('mst-password') || DEFAULT_PASS;
+}
+
+function checkSession() {
+  const sess = sessionStorage.getItem('mst-loggedin');
+  if (sess === 'yes') {
+    document.getElementById('login-overlay').style.display = 'none';
+  }
+}
+
+function doLogin() {
+  const user = document.getElementById('l-user').value.trim();
+  const pass = document.getElementById('l-pass').value;
+  const err  = document.getElementById('login-err');
+  if (user === DEFAULT_USER && pass === getStoredPass()) {
+    sessionStorage.setItem('mst-loggedin', 'yes');
+    document.getElementById('login-overlay').style.display = 'none';
+    err.textContent = '';
+  } else {
+    err.textContent = '❌ Username ya password galat hai!';
+    document.getElementById('l-pass').value = '';
+    document.getElementById('l-pass').focus();
+  }
+}
+
+function doLogout() {
+  if (!confirm('Logout karna chahte hain?')) return;
+  sessionStorage.removeItem('mst-loggedin');
+  document.getElementById('l-user').value = '';
+  document.getElementById('l-pass').value = '';
+  document.getElementById('login-err').textContent = '';
+  document.getElementById('login-overlay').style.display = 'flex';
+}
+
+function openChPwd() {
+  document.getElementById('cp-current').value = '';
+  document.getElementById('cp-new').value = '';
+  document.getElementById('cp-confirm').value = '';
+  document.getElementById('cp-msg').textContent = '';
+  document.getElementById('cp-msg').style.color = 'var(--accent)';
+  document.getElementById('chpwd-modal').classList.add('open');
+}
+
+function closeChPwd() {
+  document.getElementById('chpwd-modal').classList.remove('open');
+}
+
+function changePassword() {
+  const current = document.getElementById('cp-current').value;
+  const newp    = document.getElementById('cp-new').value.trim();
+  const confirm = document.getElementById('cp-confirm').value;
+  const msg     = document.getElementById('cp-msg');
+  if (current !== getStoredPass()) {
+    msg.style.color = 'var(--accent)';
+    msg.textContent = '❌ Purana password galat hai!'; return;
+  }
+  if (newp.length < 4) {
+    msg.style.color = 'var(--accent)';
+    msg.textContent = '❌ Naya password kam se kam 4 characters ka hona chahiye!'; return;
+  }
+  if (newp !== confirm) {
+    msg.style.color = 'var(--accent)';
+    msg.textContent = '❌ Dono passwords match nahi kar rahe!'; return;
+  }
+  localStorage.setItem('mst-password', newp);
+  msg.style.color = 'var(--green)';
+  msg.textContent = '✅ Password badal gaya!';
+  setTimeout(() => closeChPwd(), 1800);
+}
+
+// Close modal on overlay click
+document.getElementById('chpwd-modal').addEventListener('click', function(e){
+  if(e.target === this) closeChPwd();
+});
+
+// Check session on load
+checkSession();
+</script>
+</body>
+</html>
