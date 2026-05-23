@@ -518,33 +518,10 @@ footer span { color:var(--accent2); }
           </div>
 
           <div class="form-section-title">Weight Details</div>
-          <div class="form-row three">
+          <div class="form-row single">
             <div class="form-group">
-              <label>Gross Wt (Ton) *</label>
-              <input type="number" id="t-gross" placeholder="35" min="0" step="0.01" oninput="calcWeights()"/>
-            </div>
-            <div class="form-group">
-              <label>Truck (Tare) Wt (Ton)</label>
-              <input type="number" id="t-tare" placeholder="12" min="0" step="0.01" oninput="calcWeights()"/>
-            </div>
-            <div class="form-group">
-              <label>Net Weight (Ton)</label>
-              <input type="number" id="t-net" placeholder="23" min="0" step="0.01" oninput="calcNetManual()" readonly/>
-            </div>
-          </div>
-
-          <div class="calc-box">
-            <div class="calc-item">
-              <div class="calc-label">Gross Weight</div>
-              <div class="calc-val" id="c-gross">— T</div>
-            </div>
-            <div class="calc-item">
-              <div class="calc-label">Truck Weight</div>
-              <div class="calc-val" id="c-tare">— T</div>
-            </div>
-            <div class="calc-item">
-              <div class="calc-label">Net (Mal) Weight</div>
-              <div class="calc-val highlight" id="c-net">— T</div>
+              <label>Net Weight (Ton) *</label>
+              <input type="number" id="t-net" placeholder="23" min="0" step="0.01" oninput="calcValue()"/>
             </div>
           </div>
 
@@ -605,8 +582,6 @@ footer span { color:var(--accent2); }
                 <th>Truck No.</th>
                 <th>Driver</th>
                 <th>Material</th>
-                <th>Gross(T)</th>
-                <th>Tare(T)</th>
                 <th>Net(T)</th>
                 <th>Rate/T</th>
                 <th>Mal Value</th>
@@ -616,7 +591,7 @@ footer span { color:var(--accent2); }
               </tr>
             </thead>
             <tbody id="trips-body">
-              <tr><td colspan="13" class="no-records">Abhi koi trip entry nahi.<br/>Form bhar ke save karo.</td></tr>
+              <tr><td colspan="11" class="no-records">Abhi koi trip entry nahi.<br/>Form bhar ke save karo.</td></tr>
             </tbody>
           </table>
         </div>
@@ -923,8 +898,6 @@ function addTrip() {
   if (!truckNo || !driverName || !material) {
     alert('Truck number, driver naam aur material zaroori hain!'); return;
   }
-  const gross = parseFloat(document.getElementById('t-gross').value)||0;
-  const tare  = parseFloat(document.getElementById('t-tare').value)||0;
   const net   = parseFloat(document.getElementById('t-net').value)||0;
   const rate  = parseFloat(document.getElementById('t-rate').value)||0;
   const value = parseFloat(document.getElementById('t-value').value)||0;
@@ -933,7 +906,7 @@ function addTrip() {
     id: Date.now(),
     truckNo, driverName, material,
     date:   document.getElementById('t-date').value,
-    gross, tare, net, rate, value,
+    net, rate, value,
     commission: parseFloat(document.getElementById('t-commission').value)||500,
     from: document.getElementById('t-from').value.trim()||'-',
     to:   document.getElementById('t-to').value.trim()||'-',
@@ -947,14 +920,13 @@ function addTrip() {
 }
 
 function resetTripForm() {
-  ['t-truckNo','t-driverName','t-material','t-gross','t-tare','t-net',
+  ['t-truckNo','t-driverName','t-material','t-net',
    't-rate','t-value','t-from','t-to','t-note'].forEach(id=>{
     document.getElementById(id).value='';
   });
   document.getElementById('t-commission').value=500;
   document.getElementById('t-date').value=new Date().toISOString().split('T')[0];
   document.querySelectorAll('.mat-tag').forEach(t=>t.classList.remove('active'));
-  ['c-gross','c-tare','c-net'].forEach(id=>document.getElementById(id).textContent='— T');
 }
 
 // ============ ADD PAYMENT ============
@@ -1021,7 +993,7 @@ function renderTrips() {
   );
   const tbody = document.getElementById('trips-body');
   if (!filtered.length) {
-    tbody.innerHTML=`<tr><td colspan="13" class="no-records">Koi trip nahi mili.</td></tr>`; return;
+    tbody.innerHTML=`<tr><td colspan="11" class="no-records">Koi trip nahi mili.</td></tr>`; return;
   }
   let tComm=0, tVal=0;
   let rows = filtered.map((r,i)=>{
@@ -1033,8 +1005,6 @@ function renderTrips() {
       <td><strong>${r.truckNo}</strong></td>
       <td>${r.driverName}</td>
       <td><span class="badge ${getBadge(r.material)}">${r.material}</span></td>
-      <td>${r.gross?r.gross+'T':'—'}</td>
-      <td>${r.tare?r.tare+'T':'—'}</td>
       <td class="val-blue">${r.net?r.net+'T':'—'}</td>
       <td>${r.rate?'₹'+r.rate:'-'}</td>
       <td class="val-green">${fmtRs(r.value)}</td>
@@ -1044,7 +1014,7 @@ function renderTrips() {
     </tr>`;
   }).join('');
   rows += `<tr class="total-row">
-    <td colspan="9" style="text-align:right;padding-right:12px">TOTAL (${filtered.length} trucks)</td>
+    <td colspan="7" style="text-align:right;padding-right:12px">TOTAL (${filtered.length} trucks)</td>
     <td class="val-green">₹${tVal.toLocaleString('en-IN')}</td>
     <td class="val-red">₹${tComm.toLocaleString('en-IN')}</td>
     <td colspan="2"></td>
