@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MS Transport — Marwar Services</title>
+<title>MS Transport — Marwar Services ERP</title>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
 :root {
@@ -70,8 +70,10 @@ body { background:var(--bg); font-family:'Noto Sans',sans-serif; color:var(--dar
 .modal-overlay.open { display:flex; }
 .modal-box {
   background:var(--surface); border-top:4px solid var(--accent2);
-  padding:32px; width:100%; max-width:380px;
+  padding:32px; width:100%; max-width:420px;
   box-shadow:0 8px 40px rgba(0,0,0,0.3);
+  max-height: 85vh;
+  overflow-y: auto;
 }
 .modal-box h3 {
   font-family:'Rajdhani',sans-serif; font-size:1.2rem;
@@ -80,12 +82,12 @@ body { background:var(--bg); font-family:'Noto Sans',sans-serif; color:var(--dar
 }
 .modal-field { display:flex; flex-direction:column; gap:5px; margin-bottom:12px; }
 .modal-field label { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--muted); }
-.modal-field input {
+.modal-field input, .modal-field select {
   background:var(--bg); border:1px solid var(--border);
   padding:10px 12px; font-family:'Noto Sans',sans-serif; font-size:0.9rem;
-  color:var(--dark); outline:none; transition:border-color 0.2s;
+  color:var(--dark); outline:none; transition:border-color 0.2s; width:100%;
 }
-.modal-field input:focus { border-color:var(--accent2); }
+.modal-field input:focus, .modal-field select:focus { border-color:var(--accent2); }
 .modal-btns { display:flex; gap:10px; margin-top:16px; }
 .modal-btns button { flex:1; padding:11px; font-family:'Rajdhani',sans-serif; font-weight:700; font-size:1rem; letter-spacing:1px; text-transform:uppercase; cursor:pointer; border:none; transition:background 0.2s; }
 .btn-modal-ok  { background:var(--accent2); color:#fff; }
@@ -111,9 +113,16 @@ header {
 }
 .logo-main span { color:var(--accent2); }
 .logo-sub { font-size:0.65rem; color:#aaa; letter-spacing:2px; text-transform:uppercase; }
-.header-right { text-align:right; }
+.header-right { text-align:right; display:flex; align-items:center; gap:16px; }
 .owner-name { color:var(--accent2); font-size:0.82rem; font-weight:600; letter-spacing:1px; }
 .header-date { color:#777; font-size:0.72rem; margin-top:2px; }
+.header-btns { display:flex; gap:8px; }
+.header-btn {
+  background:none; border:1px solid #444; color:#aaa; padding:6px 14px;
+  font-size:0.7rem; cursor:pointer; transition:all 0.2s; text-transform:uppercase;
+  font-family:'Rajdhani',sans-serif; font-weight:600; letter-spacing:1px;
+}
+.header-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
 
 /* TABS */
 .tabs {
@@ -137,11 +146,11 @@ header {
 .panel { display:none; }
 .panel.active { display:block; }
 
-.container { max-width:1280px; margin:0 auto; padding:24px; }
+.container { max-width:1400px; margin:0 auto; padding:24px; }
 
 /* SUMMARY CARDS */
 .summary-row {
-  display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:24px;
+  display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-bottom:24px;
 }
 .sum-card {
   background:var(--surface); border:1px solid var(--border);
@@ -152,6 +161,7 @@ header {
 .sum-card:nth-child(3){border-top-color:var(--green);}
 .sum-card:nth-child(4){border-top-color:var(--blue);}
 .sum-card:nth-child(5){border-top-color:#7d3c98;}
+.sum-card:nth-child(6){border-top-color:#e74c3c;}
 .sum-label { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:1.5px; color:var(--muted); margin-bottom:6px; }
 .sum-value { font-family:'Rajdhani',sans-serif; font-size:1.8rem; font-weight:700; line-height:1; }
 .sum-sub { font-size:0.73rem; color:var(--muted); margin-top:3px; }
@@ -160,13 +170,21 @@ header {
 .card { background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow); margin-bottom:20px; }
 .card-head {
   background:var(--dark); padding:13px 20px;
-  display:flex; align-items:center; gap:10px;
+  display:flex; align-items:center; gap:10px; justify-content:space-between;
 }
+.card-head-title { display:flex; align-items:center; gap:10px; }
 .card-head h2 {
   font-family:'Rajdhani',sans-serif; font-size:1rem;
   font-weight:700; color:#fff; letter-spacing:1.5px; text-transform:uppercase;
 }
 .card-head .dot { width:8px; height:8px; border-radius:50%; background:var(--accent2); flex-shrink:0; }
+.card-head-action { display:flex; gap:8px; }
+.card-head button {
+  background:var(--accent); color:#fff; border:none; padding:5px 12px;
+  font-size:0.7rem; cursor:pointer; font-family:'Rajdhani',sans-serif;
+  font-weight:600; letter-spacing:1px; transition:background 0.2s;
+}
+.card-head button:hover { background:#8e3516; }
 .card-body { padding:20px; }
 
 /* RATES PANEL */
@@ -186,7 +204,7 @@ header {
 .rate-input-row input:focus { border-color:var(--accent); }
 
 /* FORM */
-.two-col { display:grid; grid-template-columns:400px 1fr; gap:20px; }
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
 .form-section-title {
   font-size:0.7rem; font-weight:600; text-transform:uppercase;
   letter-spacing:1.5px; color:var(--accent); margin:14px 0 8px;
@@ -248,6 +266,8 @@ header {
 .btn-submit:hover { background:#8e3516; transform:translateY(-1px); }
 .btn-submit.blue { background:var(--blue); }
 .btn-submit.blue:hover { background:#123e5e; }
+.btn-submit.green { background:var(--green); }
+.btn-submit.green:hover { background:#1f5636; }
 
 /* TABLE */
 .tbl-toolbar {
@@ -264,10 +284,12 @@ header {
 .btn-sm {
   background:none; border:1px solid var(--border); color:var(--muted);
   padding:7px 14px; font-size:0.78rem; cursor:pointer;
-  font-family:'Noto Sans',sans-serif; transition:all 0.15s;
+  font-family:'Noto Sans',sans-serif; transition:all 0.15s; text-transform:uppercase;
+  font-weight:600; letter-spacing:0.5px;
 }
 .btn-sm:hover { background:var(--dark); color:#fff; border-color:var(--dark); }
 .btn-sm.red:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+.btn-sm.green:hover { background:var(--green); color:#fff; border-color:var(--green); }
 
 .table-wrap { overflow-x:auto; }
 table { width:100%; border-collapse:collapse; font-size:0.82rem; }
@@ -286,6 +308,7 @@ tbody td { padding:9px 12px; white-space:nowrap; }
   display:inline-block; padding:2px 9px;
   font-size:0.7rem; font-weight:600;
   text-transform:uppercase; letter-spacing:0.5px; color:#fff;
+  border-radius:3px;
 }
 .b-gitti    { background:#555; }
 .b-gypsum   { background:#b8860b; }
@@ -299,6 +322,9 @@ tbody td { padding:9px 12px; white-space:nowrap; }
 .b-repair   { background:#784212; }
 .b-toll     { background:#1e8449; }
 .b-other    { background:#555; }
+.b-active { background:var(--green); }
+.b-inactive { background:#999; }
+.b-maintenance { background:#e67e22; }
 
 .val-green { color:var(--green); font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:700; }
 .val-red   { color:var(--accent); font-family:'Rajdhani',sans-serif; font-size:0.95rem; font-weight:700; }
@@ -307,8 +333,10 @@ tbody td { padding:9px 12px; white-space:nowrap; }
 .total-row td { font-weight:700; background:#ece8de; border-top:2px solid var(--dark); font-family:'Rajdhani',sans-serif; }
 .no-records { text-align:center; padding:44px; color:var(--muted); font-size:0.88rem; }
 
-.btn-del { background:none; border:1px solid #ddd; color:var(--muted); padding:3px 9px; font-size:0.75rem; cursor:pointer; transition:all 0.12s; }
+.btn-del { background:none; border:1px solid #ddd; color:var(--muted); padding:3px 9px; font-size:0.75rem; cursor:pointer; transition:all 0.12s; text-transform:uppercase; font-weight:600; }
 .btn-del:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+.btn-edit { background:none; border:1px solid #ddd; color:var(--blue); padding:3px 9px; font-size:0.75rem; cursor:pointer; transition:all 0.12s; text-transform:uppercase; font-weight:600; margin-right:4px; }
+.btn-edit:hover { background:var(--blue); color:#fff; border-color:var(--blue); }
 
 /* DRIVER PAYMENT SPECIFIC */
 .exp-tags { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:10px; }
@@ -333,9 +361,14 @@ footer {
 }
 footer span { color:var(--accent2); }
 
-@media(max-width:900px){
-  .summary-row { grid-template-columns:1fr 1fr; }
+.two-col-form {
+  display:grid; grid-template-columns:1fr 1fr; gap:16px;
+}
+
+@media(max-width:1000px){
+  .summary-row { grid-template-columns:repeat(3,1fr); }
   .two-col { grid-template-columns:1fr; }
+  .two-col-form { grid-template-columns:1fr; }
   .rates-grid { grid-template-columns:1fr 1fr; }
   .calc-box { grid-template-columns:1fr; }
   .tabs { padding:0 12px; overflow-x:auto; }
@@ -345,60 +378,14 @@ footer span { color:var(--accent2); }
   .summary-row { grid-template-columns:1fr 1fr; }
   .form-row { grid-template-columns:1fr; }
   .form-row.three { grid-template-columns:1fr; }
+  .two-col-form { grid-template-columns:1fr; }
   header { padding:0 16px; }
   .container { padding:14px; }
+  .header-right { flex-direction:column; align-items:flex-end; gap:6px; }
+  .header-btns { flex-wrap:wrap; justify-content:flex-end; }
+  .header-btn { padding:4px 10px; font-size:0.65rem; }
 }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, collection, doc, setDoc, getDocs, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA5fRMGOclNcVrY9y6ve7asBZx-nb7SpXQ",
-  authDomain: "marwar-services.firebaseapp.com",
-  projectId: "marwar-services",
-  storageBucket: "marwar-services.firebasestorage.app",
-  messagingSenderId: "128142477871",
-  appId: "1:128142477871:web:3bf1a147a5fde11d9e14da"
-};
-
-const app = initializeApp(firebaseConfig);
-const db  = getFirestore(app);
-window._db = db;
-window._col = collection;
-window._doc = doc;
-window._setDoc = setDoc;
-window._getDocs = getDocs;
-window._deleteDoc = deleteDoc;
-window._onSnapshot = onSnapshot;
-window._query = query;
-window._orderBy = orderBy;
-window._dbReady = true;
-
-// Real-time listeners — update arrays and re-render on any change
-function listenCol(colName, arr, renderFn, summaryFn) {
-  const q = _query(collection(db, colName), _orderBy('id', 'desc'));
-  _onSnapshot(q, snap => {
-    arr.length = 0;
-    snap.forEach(d => arr.push(d.data()));
-    renderFn();
-    if (summaryFn) summaryFn();
-  });
-}
-
-// Wait for DOM then start listeners
-window.addEventListener('load', () => {
-  const fbStatus = document.getElementById('fb-status');
-  if (fbStatus) fbStatus.textContent = '✅ Server connected';
-  setTimeout(() => { if (fbStatus) fbStatus.style.display = 'none'; }, 2000);
-  listenCol('trips',    window._trips,    () => { window.renderTrips && renderTrips(); },    () => { window.updateTripSummary && updateTripSummary(); });
-  listenCol('payments', window._payments, () => { window.renderPayments && renderPayments(); }, () => { window.updatePaySummary && updatePaySummary(); });
-  listenCol('finances', window._finances, () => { window.renderFinance && renderFinance(); window.updateTruckList && updateTruckList(); }, null);
-  listenCol('trucks',   window._trucks,   () => { window.renderTrucks && renderTrucks(); window.updateTruckDatalist && updateTruckDatalist(); }, () => { window.updateLedgerSummary && updateLedgerSummary(); });
-  listenCol('ledger',   window._ledger,   () => { window.renderLedger && renderLedger(); window.updateLedgerSummary && updateLedgerSummary(); }, null);
-});
-</script>
 </head>
 <body>
 
@@ -406,52 +393,20 @@ window.addEventListener('load', () => {
 <div id="login-overlay">
   <div class="login-box">
     <div class="login-logo">MS <span>TRANSPORT</span></div>
-    <div class="login-sub">Marwar Services — Secure Login</div>
-    <div id="fb-status" style="font-size:0.7rem;color:#888;margin-bottom:8px;letter-spacing:1px;">🔄 Connecting to server...</div>
+    <div class="login-sub">Marwar Services — ERP System</div>
+    <div id="fb-status" style="font-size:0.7rem;color:#888;margin-bottom:8px;letter-spacing:1px;">💾 Local Storage Mode</div>
     <div class="login-field">
       <label>Username</label>
-      <input type="text" id="l-user" placeholder="Enter username" autocomplete="username"/>
+      <input type="text" id="l-user" placeholder="Enter username" autocomplete="username" value="Marwar Services"/>
     </div>
     <div class="login-field">
       <label>Password</label>
-      <input type="password" id="l-pass" placeholder="Enter password" autocomplete="current-password"
+      <input type="password" id="l-pass" placeholder="Enter password" autocomplete="current-password" value="MS@123"
         onkeydown="if(event.key==='Enter')doLogin()"/>
     </div>
     <button class="login-btn" onclick="doLogin()">🔐 Login Karo</button>
     <div class="login-err" id="login-err"></div>
-    <div class="login-owner">👤 Pukhraj Chhaba &nbsp;|&nbsp; Marwar Services</div>
-  </div>
-</div>
-
-<!-- CREATE USER MODAL -->
-<div class="modal-overlay" id="createuser-modal">
-  <div class="modal-box">
-    <h3>👤 Naya User Banao</h3>
-    <div class="modal-field">
-      <label>Username (Login ke liye)</label>
-      <input type="text" id="cu-username" placeholder="e.g. ramu123"/>
-    </div>
-    <div class="modal-field">
-      <label>Display Name</label>
-      <input type="text" id="cu-displayname" placeholder="e.g. Ramesh Kumar"/>
-    </div>
-    <div class="modal-field">
-      <label>Password</label>
-      <input type="password" id="cu-pass" placeholder="Min 4 characters"/>
-    </div>
-    <div class="modal-field">
-      <label>Role</label>
-      <select id="cu-role" style="background:var(--bg);border:1px solid var(--border);padding:10px 12px;font-size:0.9rem;color:var(--dark);outline:none;width:100%;">
-        <option value="viewer">👁️ Viewer (Sirf dekh sakta hai)</option>
-      </select>
-    </div>
-    <div class="modal-btns">
-      <button class="btn-modal-cancel" onclick="closeCreateUser()">Cancel</button>
-      <button class="btn-modal-ok" onclick="createUser()">✅ User Banao</button>
-    </div>
-    <div class="modal-msg" id="cu-msg"></div>
-    <!-- Users List -->
-    <div id="cu-userlist" style="margin-top:18px;border-top:1px solid var(--border);padding-top:14px;"></div>
+    <div class="login-owner">👤 Marwar Services | Truck Fleet Management</div>
   </div>
 </div>
 
@@ -472,1814 +427,1869 @@ window.addEventListener('load', () => {
       <input type="password" id="cp-confirm" placeholder="Dobara naya password"/>
     </div>
     <div class="modal-btns">
-      <button class="btn-modal-cancel" onclick="closeChPwd()">Cancel</button>
-      <button class="btn-modal-ok" onclick="changePassword()">Save Karo</button>
+      <button class="btn-modal-cancel" onclick="closeChpwd()">Cancel</button>
+      <button class="btn-modal-ok" onclick="changePassword()">✅ Update Karo</button>
     </div>
     <div class="modal-msg" id="cp-msg"></div>
   </div>
 </div>
 
+<!-- MAIN INTERFACE -->
+<div id="main-interface" style="display:none;">
+
+<!-- HEADER -->
 <header>
   <div class="header-left">
     <div class="logo-main">MS <span>TRANSPORT</span></div>
-    <div class="logo-sub">Marwar Services — Raw Material Transport</div>
+    <div class="logo-sub">Marwar Services | Truck Fleet Management</div>
   </div>
   <div class="header-right">
-    <div class="owner-name">👤 <span id="header-username">Pukhraj Chhaba</span> <span id="header-role-badge" style="font-size:0.65rem;padding:2px 7px;background:var(--accent);color:#fff;letter-spacing:1px;margin-left:6px;"></span></div>
-    <div class="header-date" id="headerDate"></div>
+    <div>
+      <div class="owner-name" id="header-user">Welcome</div>
+      <div class="header-date" id="header-date">Today</div>
+    </div>
+    <div class="header-btns">
+      <button class="header-btn" onclick="openChpwd()">🔐 PWD</button>
+      <button class="header-btn" onclick="doLogout()">🚪 Logout</button>
+    </div>
   </div>
 </header>
 
+<!-- TABS -->
 <div class="tabs">
-  <div class="tab active" onclick="switchTab('trip')">🚛 Trip Entry</div>
-  <div class="tab" onclick="switchTab('driver')">💰 Driver Payment</div>
-  <div class="tab" onclick="switchTab('finance')">🏦 Truck Finances</div>
-  <div class="tab" onclick="switchTab('rates')">⚙️ Material Rates</div>
-  <div class="tab" onclick="switchTab('ledger')">📒 Truck Ledger</div>
+  <div class="tab active" onclick="switchTab(0)">📊 Dashboard</div>
+  <div class="tab" onclick="switchTab(1)">🚚 Trucks</div>
+  <div class="tab" onclick="switchTab(2)">👨 Drivers</div>
+  <div class="tab" onclick="switchTab(3)">🛣️ Trips</div>
+  <div class="tab" onclick="switchTab(4)">💰 Finance</div>
+  <div class="tab" onclick="switchTab(5)">📋 Ledger</div>
 </div>
 
-<!-- ============ PANEL 1: TRIP ENTRY ============ -->
-<div class="panel active" id="panel-trip">
-<div class="container">
+<!-- PANELS -->
 
-  <div class="summary-row">
-    <div class="sum-card">
-      <div class="sum-label">Aaj ke Trucks</div>
-      <div class="sum-value" id="s-todayTrucks">0</div>
-      <div class="sum-sub">Aaj ki entries</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Trucks</div>
-      <div class="sum-value" id="s-totalTrucks">0</div>
-      <div class="sum-sub">Saari entries</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Aaj Commission</div>
-      <div class="sum-value" id="s-todayComm">₹0</div>
-      <div class="sum-sub">@₹500 per truck</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Commission</div>
-      <div class="sum-value" id="s-totalComm">₹0</div>
-      <div class="sum-sub">Sabka total</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Aaj Total Amount</div>
-      <div class="sum-value" id="s-todayValue">₹0</div>
-      <div class="sum-sub">Mal Value + Commission</div>
-    </div>
-  </div>
-
-  <div class="two-col">
-
-    <!-- FORM LEFT -->
-    <div>
-      <div class="card">
-        <div class="card-head"><div class="dot"></div><h2>Nayi Trip Entry</h2></div>
-        <div class="card-body">
-
-          <div class="form-section-title">Material Chuniye</div>
-          <div class="mat-tags">
-            <div class="mat-tag mt-gitti"     onclick="selectMat(this,'Gitti','trip')">🪨 Gitti</div>
-            <div class="mat-tag mt-gypsum"    onclick="selectMat(this,'Gypsum','trip')">🟡 Gypsum</div>
-            <div class="mat-tag mt-coal"      onclick="selectMat(this,'Coal','trip')">⚫ Coal</div>
-            <div class="mat-tag mt-chinaclay" onclick="selectMat(this,'China Clay','trip')">🔵 China Clay</div>
-            <div class="mat-tag mt-ocher"     onclick="selectMat(this,'Red Ocher','trip')">🔴 Red Ocher</div>
-            <div class="mat-tag mt-limestone" onclick="selectMat(this,'Limestone','trip')">⬜ Limestone</div>
-          </div>
-
-          <div class="form-section-title">Truck Details</div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Truck Number *</label>
-              <input type="text" id="t-truckNo" placeholder="RJ14 GA 1234"/>
-            </div>
-            <div class="form-group">
-              <label>Driver Ka Naam *</label>
-              <input type="text" id="t-driverName" placeholder="Ramesh Kumar"/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Material *</label>
-              <input type="text" id="t-material" placeholder="Gitti / Coal..."/>
-            </div>
-            <div class="form-group">
-              <label>Date</label>
-              <input type="date" id="t-date"/>
-            </div>
-          </div>
-
-          <div class="form-section-title">Weight Details</div>
-          <div class="form-row single">
-            <div class="form-group">
-              <label>Net Weight (Ton) *</label>
-              <input type="number" id="t-net" placeholder="23" min="0" step="0.01" oninput="calcValue()"/>
-            </div>
-          </div>
-
-          <div class="form-section-title">Rate & Value</div>
-          <div class="form-row three">
-            <div class="form-group">
-              <label>Per Ton Rate (₹)</label>
-              <input type="number" id="t-rate" placeholder="Auto from rates" min="0" oninput="calcValue()"/>
-            </div>
-            <div class="form-group">
-              <label>Commission (₹)</label>
-              <input type="number" id="t-commission" value="500" min="0" oninput="calcValue()"/>
-            </div>
-            <div class="form-group">
-              <label>Total Amount (₹)</label>
-              <input type="number" id="t-value" placeholder="Auto" readonly/>
-            </div>
-          </div>
-
-          <div class="form-section-title">Route</div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Kahan Se (From)</label>
-              <input type="text" id="t-from" placeholder="Nagaur"/>
-            </div>
-            <div class="form-group">
-              <label>Kahan Tak (To)</label>
-              <input type="text" id="t-to" placeholder="Kota"/>
-            </div>
-          </div>
-          <div class="form-row single">
-            <div class="form-group">
-              <label>Note</label>
-              <input type="text" id="t-note" placeholder="Koi khaas baat..."/>
-            </div>
-          </div>
-
-          <button class="btn-submit" onclick="addTrip()">🚛 Trip Entry Save Karo</button>
-        </div>
+<!-- ========== DASHBOARD ========== -->
+<div class="panel active">
+  <div class="container">
+    <div class="summary-row" id="dashboard-summary">
+      <div class="sum-card">
+        <div class="sum-label">🚚 Total Trucks</div>
+        <div class="sum-value" id="ds-trucks">0</div>
+        <div class="sum-sub">Active & Inactive</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">👨 Total Drivers</div>
+        <div class="sum-value" id="ds-drivers">0</div>
+        <div class="sum-sub">On Payroll</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">🛣️ Total Trips</div>
+        <div class="sum-value" id="ds-trips">0</div>
+        <div class="sum-sub">All Time</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">💵 Total Income</div>
+        <div class="sum-value" id="ds-income">₹0</div>
+        <div class="sum-sub">From Trips</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">💸 Total Expense</div>
+        <div class="sum-value" id="ds-expense">₹0</div>
+        <div class="sum-sub">All Categories</div>
+      </div>
+      <div class="sum-card">
+        <div class="sum-label">📈 Net Balance</div>
+        <div class="sum-value" id="ds-balance">₹0</div>
+        <div class="sum-sub">Income - Expense</div>
       </div>
     </div>
 
-    <!-- TABLE RIGHT -->
-    <div>
-      <div class="card">
-        <div class="card-head"><div class="dot"></div><h2>Trip Records</h2>
-          <div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-            <input class="filter-input" id="t-search" placeholder="Search truck/driver..." oninput="renderTrips()"/>
-            <button class="btn-sm red" onclick="clearTrips()">Clear All</button>
-          </div>
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Recent Trips (Last 10)</h2>
         </div>
-        <div style="display:flex;gap:8px;align-items:center;padding:10px 16px;background:#f9f5ef;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-          <span style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Download:</span>
-          <input type="date" id="t-dl-date" style="background:var(--bg);border:1px solid var(--border);padding:6px 10px;font-size:0.82rem;color:var(--dark);outline:none;"/>
-          <button class="btn-sm" onclick="downloadTripExcel('date')" style="background:#1a5276;color:#fff;border-color:#1a5276;">📅 Date Wise Excel</button>
-          <select id="t-dl-month" style="background:var(--bg);border:1px solid var(--border);padding:6px 10px;font-size:0.82rem;color:var(--dark);outline:none;">
-            <option value="">-- Month chuniye --</option>
-            <option value="2025-01">Jan 2025</option><option value="2025-02">Feb 2025</option>
-            <option value="2025-03">Mar 2025</option><option value="2025-04">Apr 2025</option>
-            <option value="2025-05">May 2025</option><option value="2025-06">Jun 2025</option>
-            <option value="2025-07">Jul 2025</option><option value="2025-08">Aug 2025</option>
-            <option value="2025-09">Sep 2025</option><option value="2025-10">Oct 2025</option>
-            <option value="2025-11">Nov 2025</option><option value="2025-12">Dec 2025</option>
-            <option value="2026-01">Jan 2026</option><option value="2026-02">Feb 2026</option>
-            <option value="2026-03">Mar 2026</option><option value="2026-04">Apr 2026</option>
-            <option value="2026-05">May 2026</option><option value="2026-06">Jun 2026</option>
-            <option value="2026-07">Jul 2026</option><option value="2026-08">Aug 2026</option>
-            <option value="2026-09">Sep 2026</option><option value="2026-10">Oct 2026</option>
-            <option value="2026-11">Nov 2026</option><option value="2026-12">Dec 2026</option>
-          </select>
-          <button class="btn-sm" onclick="downloadTripExcel('month')" style="background:#2e7d52;color:#fff;border-color:#2e7d52;">📆 Month Wise Excel</button>
-          <button class="btn-sm" onclick="downloadTripExcel('all')" style="background:#555;color:#fff;border-color:#555;">📊 All Data Excel</button>
-        </div>
+      </div>
+      <div class="card-body">
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Truck No.</th>
+                <th>Trip ID</th>
+                <th>Truck</th>
                 <th>Driver</th>
                 <th>Material</th>
-                <th>Net(T)</th>
-                <th>Rate/T</th>
-                <th>Commission</th>
-                <th>Total Amount</th>
-                <th>Route</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="trips-body">
-              <tr><td colspan="11" class="no-records">Abhi koi trip entry nahi.<br/>Form bhar ke save karo.</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============ PANEL 2: DRIVER PAYMENT ============ -->
-<div class="panel" id="panel-driver">
-<div class="container">
-
-  <div class="summary-row">
-    <div class="sum-card">
-      <div class="sum-label">Total Advance</div>
-      <div class="sum-value" id="dp-totalAdv">₹0</div>
-      <div class="sum-sub">Drivers ko diya</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Fuel</div>
-      <div class="sum-value" id="dp-totalFuel">₹0</div>
-      <div class="sum-sub">Diesel/Petrol</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Repair</div>
-      <div class="sum-value" id="dp-totalRepair">₹0</div>
-      <div class="sum-sub">Maintenance</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Toll / Other</div>
-      <div class="sum-value" id="dp-totalOther">₹0</div>
-      <div class="sum-sub">Toll + misc</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Kharcha</div>
-      <div class="sum-value" id="dp-totalAll">₹0</div>
-      <div class="sum-sub">Sabka total</div>
-    </div>
-  </div>
-
-  <div class="two-col">
-    <div>
-      <div class="card">
-        <div class="card-head"><div class="dot"></div><h2>Driver Payment / Truck Kharcha</h2></div>
-        <div class="card-body">
-
-          <div class="form-section-title">Truck & Driver</div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Truck Number *</label>
-              <input type="text" id="d-truckNo" placeholder="RJ14 GA 1234"/>
-            </div>
-            <div class="form-group">
-              <label>Driver Ka Naam *</label>
-              <input type="text" id="d-driverName" placeholder="Ramesh Kumar"/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Date *</label>
-              <input type="date" id="d-date"/>
-            </div>
-            <div class="form-group">
-              <label>Trip Reference (Optional)</label>
-              <input type="text" id="d-tripRef" placeholder="Trip ID ya truck no."/>
-            </div>
-          </div>
-
-          <div class="form-section-title">Kharcha Ka Type</div>
-          <div class="exp-tags">
-            <div class="exp-tag et-advance" onclick="selectExp(this,'Advance')">💵 Advance</div>
-            <div class="exp-tag et-fuel"    onclick="selectExp(this,'Fuel')">⛽ Fuel</div>
-            <div class="exp-tag et-repair"  onclick="selectExp(this,'Repair')">🔧 Repair</div>
-            <div class="exp-tag et-toll"    onclick="selectExp(this,'Toll')">🛣️ Toll</div>
-            <div class="exp-tag et-other"   onclick="selectExp(this,'Other')">📦 Other</div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Kharcha Type *</label>
-              <input type="text" id="d-type" placeholder="Advance / Fuel..."/>
-            </div>
-            <div class="form-group">
-              <label>Amount (₹) *</label>
-              <input type="number" id="d-amount" placeholder="2000" min="0"/>
-            </div>
-          </div>
-
-          <div class="form-section-title">Additional Details</div>
-          <div class="form-row three">
-            <div class="form-group">
-              <label>Fuel Litres</label>
-              <input type="number" id="d-litres" placeholder="50 L" min="0"/>
-            </div>
-            <div class="form-group">
-              <label>Odometer (KM)</label>
-              <input type="number" id="d-odo" placeholder="12500" min="0"/>
-            </div>
-            <div class="form-group">
-              <label>Receipt No.</label>
-              <input type="text" id="d-receipt" placeholder="RCP-001"/>
-            </div>
-          </div>
-          <div class="form-row single">
-            <div class="form-group">
-              <label>Note / Reason</label>
-              <input type="text" id="d-note" placeholder="Kharche ki wajah..."/>
-            </div>
-          </div>
-
-          <button class="btn-submit blue" onclick="addPayment()">💰 Kharcha Save Karo</button>
-        </div>
-      </div>
-    </div>
-
-    <div>
-      <div class="card">
-        <div class="card-head"><div class="dot"></div><h2>Payment / Kharcha Records</h2>
-          <div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-            <input class="filter-input" id="d-search" placeholder="Search truck/driver..." oninput="renderPayments()"/>
-            <button class="btn-sm red" onclick="clearPayments()">Clear All</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;padding:10px 16px;background:#f9f5ef;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-          <span style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Download:</span>
-          <input type="date" id="d-dl-date" style="background:var(--bg);border:1px solid var(--border);padding:6px 10px;font-size:0.82rem;color:var(--dark);outline:none;"/>
-          <button class="btn-sm" onclick="downloadPayExcel('date')" style="background:#1a5276;color:#fff;border-color:#1a5276;">📅 Date Wise Excel</button>
-          <select id="d-dl-month" style="background:var(--bg);border:1px solid var(--border);padding:6px 10px;font-size:0.82rem;color:var(--dark);outline:none;">
-            <option value="">-- Month chuniye --</option>
-            <option value="2025-01">Jan 2025</option><option value="2025-02">Feb 2025</option>
-            <option value="2025-03">Mar 2025</option><option value="2025-04">Apr 2025</option>
-            <option value="2025-05">May 2025</option><option value="2025-06">Jun 2025</option>
-            <option value="2025-07">Jul 2025</option><option value="2025-08">Aug 2025</option>
-            <option value="2025-09">Sep 2025</option><option value="2025-10">Oct 2025</option>
-            <option value="2025-11">Nov 2025</option><option value="2025-12">Dec 2025</option>
-            <option value="2026-01">Jan 2026</option><option value="2026-02">Feb 2026</option>
-            <option value="2026-03">Mar 2026</option><option value="2026-04">Apr 2026</option>
-            <option value="2026-05">May 2026</option><option value="2026-06">Jun 2026</option>
-            <option value="2026-07">Jul 2026</option><option value="2026-08">Aug 2026</option>
-            <option value="2026-09">Sep 2026</option><option value="2026-10">Oct 2026</option>
-            <option value="2026-11">Nov 2026</option><option value="2026-12">Dec 2026</option>
-          </select>
-          <button class="btn-sm" onclick="downloadPayExcel('month')" style="background:#2e7d52;color:#fff;border-color:#2e7d52;">📆 Month Wise Excel</button>
-          <button class="btn-sm" onclick="downloadPayExcel('all')" style="background:#555;color:#fff;border-color:#555;">📊 All Data Excel</button>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
+                <th>From → To</th>
+                <th>Rate (₹/Km)</th>
+                <th>Distance (Km)</th>
+                <th>Total (₹)</th>
                 <th>Date</th>
-                <th>Truck No.</th>
-                <th>Driver</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Fuel (L)</th>
-                <th>Odometer</th>
-                <th>Receipt</th>
-                <th>Note</th>
-                <th></th>
               </tr>
             </thead>
-            <tbody id="payments-body">
-              <tr><td colspan="11" class="no-records">Koi payment entry nahi.<br/>Form bhar ke save karo.</td></tr>
+            <tbody id="dashboard-trips">
+              <tr class="no-records"><td colspan="9">No trips yet</td></tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-  </div>
-</div>
-</div>
 
-<!-- ============ PANEL: TRUCK FINANCES ============ -->
-<div class="panel" id="panel-finance">
-<div class="container">
-  <div class="two-col">
-    <div>
-      <div class="card">
-        <div class="card-head"><div class="dot"></div><h2>🏦 Truck Finance Entry</h2></div>
-        <div class="card-body">
-          <div class="form-section-title">Truck &amp; Driver Info</div>
-          <div class="form-row">
-            <div class="form-group"><label>Truck Number *</label><input type="text" id="f-truckNo" placeholder="RJ 19 CJ 1320" oninput="formatTruckNumber('f-truckNo')"/></div>
-            <div class="form-group"><label>Driver Ka Naam *</label><input type="text" id="f-driverName" placeholder="Ramesh Kumar"/></div>
-          </div>
-          <div class="form-section-title">Finance Type</div>
-          <div class="tf-tags">
-            <div class="tf-tag tft-advance" onclick="selectFinance(this,'Advance')">💵 Advance</div>
-            <div class="tf-tag tft-salary" onclick="selectFinance(this,'Salary')">💼 Salary</div>
-            <div class="tf-tag tft-deduction" onclick="selectFinance(this,'Deduction')">📉 Deduction</div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Finance Type *</label><input type="text" id="f-type" placeholder="Advance / Salary / Deduction"/></div>
-            <div class="form-group"><label>Amount (₹) *</label><input type="number" id="f-amount" placeholder="5000" min="0"/></div>
-          </div>
-          <div class="form-section-title">Payment Details</div>
-          <div class="form-row">
-            <div class="form-group"><label>Date *</label><input type="date" id="f-date"/></div>
-            <div class="form-group"><label>Payment Mode *</label>
-              <select id="f-mode">
-                <option value="">-- Select Mode --</option>
-                <option value="Cash">💵 Cash</option>
-                <option value="Bank Transfer">🏦 Bank Transfer</option>
-                <option value="Cheque">📃 Cheque</option>
-                <option value="Online">💳 Online Transfer</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group"><label>Reference No.</label><input type="text" id="f-ref" placeholder="RCP-001"/></div>
-            <div class="form-group"><label>Bank/Account</label><input type="text" id="f-bank" placeholder="Bank name or A/C last 4"/></div>
-          </div>
-          <div class="form-row single">
-            <div class="form-group"><label>Remarks / Note</label><input type="text" id="f-remark" placeholder="Extra details..."/></div>
-          </div>
-          <button class="btn-submit purple" onclick="addFinance()">🏦 Finance Entry Save Karo</button>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div class="card">
-        <div class="card-head"><div class="dot"></div><h2>📊 Truck Wise Summary</h2></div>
-        <div class="card-body">
-          <div class="form-group" style="margin-bottom:16px;">
-            <label>Truck Select Karo</label>
-            <select id="f-search-truck" onchange="updateTruckSummary()" style="background:var(--bg);border:1px solid var(--border);padding:9px 11px;font-family:'Noto Sans',sans-serif;font-size:0.88rem;color:var(--dark);outline:none;width:100%;"><option value="">-- Sab Trucks --</option></select>
-          </div>
-          <div class="tf-card-grid">
-            <div class="tf-stat"><div class="tf-stat-label">Total Advance</div><div class="tf-stat-val pos" id="fs-advance">₹0</div></div>
-            <div class="tf-stat"><div class="tf-stat-label">Total Salary</div><div class="tf-stat-val pos" id="fs-salary">₹0</div></div>
-            <div class="tf-stat"><div class="tf-stat-label">Total Deduction</div><div class="tf-stat-val neg" id="fs-deduction">₹0</div></div>
-          </div>
-          <div style="margin-top:20px;padding:14px;background:#f0ece5;border:1px solid var(--border);">
-            <div style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px;">Net Balance</div>
-            <div style="font-family:'Rajdhani',sans-serif;font-size:2rem;font-weight:700;" id="fs-balance">₹0</div>
-            <div style="font-size:0.75rem;color:var(--muted);margin-top:4px;">Salary + Advance - Deduction</div>
-          </div>
-        </div>
-      </div>
-      <div class="card" style="margin-top:20px;">
-        <div class="card-head"><div class="dot"></div><h2>Finance Records</h2>
-          <div style="margin-left:auto;display:flex;gap:6px;align-items:center;">
-            <input class="filter-input" id="f-search" placeholder="Search truck/driver..." oninput="renderFinance()"/>
-            <button class="btn-sm red" onclick="clearFinance()">Clear All</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:8px;align-items:center;padding:10px 16px;background:#f9f5ef;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-          <span style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Download:</span>
-          <button class="btn-sm" onclick="downloadFinanceExcel('all')" style="background:#7d3c98;color:#fff;border-color:#7d3c98;">📊 All Finance Data</button>
-          <button class="btn-sm" onclick="downloadFinanceExcel('truck')" style="background:#555;color:#fff;border-color:#555;">🚛 Truck Wise Report</button>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>#</th><th>Date</th><th>Truck No.</th><th>Driver</th><th>Type</th><th>Amount</th><th>Mode</th><th>Reference</th><th>Remarks</th><th></th></tr></thead>
-            <tbody id="finance-body"><tr><td colspan="10" class="no-records">Koi finance entry nahi.</td></tr></tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ============ PANEL 3: MATERIAL RATES ============ -->
-<div class="panel" id="panel-rates">
-<div class="container">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;margin:0 auto;">
-
-    <!-- Add Material Card -->
-    <div class="card" style="height:fit-content;">
-      <div class="card-head"><div class="dot"></div><h2>➕ Naya Material Add Karo</h2></div>
-      <div class="card-body">
-        <div class="form-group" style="margin-bottom:12px;">
-          <label>Material Ka Naam *</label>
-          <input type="text" id="new-mat-name" placeholder="e.g. Sand, Marble..."/>
-        </div>
-        <div class="form-group" style="margin-bottom:12px;">
-          <label>Emoji / Icon (optional)</label>
-          <input type="text" id="new-mat-icon" placeholder="e.g. 🟤 🪨 ⬛" maxlength="4"/>
-        </div>
-        <div class="form-group" style="margin-bottom:16px;">
-          <label>Per Ton Rate (₹)</label>
-          <input type="number" id="new-mat-rate" placeholder="0" min="0"/>
-        </div>
-        <button class="btn-submit" onclick="addNewMaterial()">➕ Material Add Karo</button>
-        <div id="new-mat-msg" style="font-size:0.82rem;margin-top:10px;min-height:18px;"></div>
-      </div>
-    </div>
-
-    <!-- Rates Card -->
     <div class="card">
-      <div class="card-head"><div class="dot"></div><h2>⚙️ Material Rates Set Karo</h2></div>
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Pending Driver Payments</h2>
+        </div>
+      </div>
       <div class="card-body">
-        <p style="color:var(--muted);font-size:0.85rem;margin-bottom:18px;">Har material ka per ton rate set karo. Trip entry mein material select karte hi rate auto fill ho jaayega.</p>
-        <div class="rates-grid" id="rates-grid"></div>
-        <button class="btn-submit" style="margin-top:20px;max-width:300px;" onclick="saveRates()">💾 Rates Save Karo</button>
-        <div id="rates-saved" style="color:var(--green);font-size:0.85rem;margin-top:10px;display:none;">✅ Rates save ho gaye!</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-</div>
-
-<!-- ============ PANEL 4: TRUCK LEDGER ============ -->
-<div class="panel" id="panel-ledger">
-<div class="container">
-
-  <!-- Summary Cards -->
-  <div class="summary-row">
-    <div class="sum-card">
-      <div class="sum-label">Total Trucks</div>
-      <div class="sum-value" id="tl-totalTrucks">0</div>
-      <div class="sum-sub">Registered trucks</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Salary</div>
-      <div class="sum-value" id="tl-totalSalary">₹0</div>
-      <div class="sum-sub">Sabki salary</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Diya</div>
-      <div class="sum-value" id="tl-totalPaid">₹0</div>
-      <div class="sum-sub">Advance + payments</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Baaki</div>
-      <div class="sum-value" id="tl-totalBalance">₹0</div>
-      <div class="sum-sub">Sabka pending</div>
-    </div>
-    <div class="sum-card">
-      <div class="sum-label">Total Kharcha</div>
-      <div class="sum-value" id="tl-totalKharcha">₹0</div>
-      <div class="sum-sub">Expenses diye</div>
-    </div>
-  </div>
-
-  <div class="two-col">
-
-    <!-- LEFT: Add Truck + Add Payment -->
-    <div>
-
-      <!-- Register Truck -->
-      <div class="card" style="margin-bottom:20px;">
-        <div class="card-head"><div class="dot"></div><h2>🚛 Truck Register Karo</h2></div>
-        <div class="card-body">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Truck Number *</label>
-              <input type="text" id="tl-truckNo" placeholder="RJ14 GA 1234"/>
-            </div>
-            <div class="form-group">
-              <label>Driver Ka Naam *</label>
-              <input type="text" id="tl-driverName" placeholder="Ramesh Kumar"/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Monthly Salary (₹) *</label>
-              <input type="number" id="tl-salary" placeholder="15000" min="0"/>
-            </div>
-            <div class="form-group">
-              <label>Mobile Number</label>
-              <input type="text" id="tl-mobile" placeholder="98XXXXXXXX"/>
-            </div>
-          </div>
-          <button class="btn-submit" onclick="addTruck()">🚛 Truck Register Karo</button>
-          <div id="tl-truck-msg" style="font-size:0.82rem;margin-top:8px;min-height:18px;"></div>
-        </div>
-      </div>
-
-      <!-- Add Payment Entry -->
-      <div class="card">
-        <div class="card-head"><div class="dot"></div><h2>💵 Payment / Advance Entry</h2></div>
-        <div class="card-body">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Truck Number *</label>
-              <input type="text" id="tl-pay-truck" placeholder="RJ14 GA 1234" list="tl-truck-list"/>
-              <datalist id="tl-truck-list"></datalist>
-            </div>
-            <div class="form-group">
-              <label>Date *</label>
-              <input type="date" id="tl-pay-date"/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Payment Type *</label>
-              <select id="tl-pay-type">
-                <option value="">-- Select --</option>
-                <option value="Salary">💰 Salary</option>
-                <option value="Advance">💵 Advance</option>
-                <option value="Kharcha">🧾 Kharcha</option>
-                <option value="Bonus">🎁 Bonus</option>
-                <option value="Other">📦 Other</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Amount (₹) *</label>
-              <input type="number" id="tl-pay-amount" placeholder="5000" min="0"/>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Payment Mode *</label>
-              <select id="tl-pay-mode">
-                <option value="Cash">💵 Cash</option>
-                <option value="Online Transfer">📱 Online Transfer</option>
-                <option value="Cheque">🏦 Cheque</option>
-                <option value="UPI">📲 UPI</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Remark</label>
-              <input type="text" id="tl-pay-remark" placeholder="e.g. July salary, petrol kharcha..."/>
-            </div>
-          </div>
-          <button class="btn-submit blue" onclick="addLedgerEntry()">💾 Entry Save Karo</button>
-          <div id="tl-pay-msg" style="font-size:0.82rem;margin-top:8px;min-height:18px;"></div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- RIGHT: Truck List + Ledger -->
-    <div>
-
-      <!-- Registered Trucks -->
-      <div class="card" style="margin-bottom:20px;">
-        <div class="card-head"><div class="dot"></div><h2>🚛 Registered Trucks</h2></div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>Truck No.</th>
                 <th>Driver</th>
-                <th>Mobile</th>
-                <th>Salary</th>
-                <th>Total Diya</th>
-                <th>Baaki</th>
-                <th></th>
+                <th>Pending Amount</th>
+                <th>Last Payment</th>
+                <th>Status</th>
               </tr>
             </thead>
-            <tbody id="tl-trucks-body">
-              <tr><td colspan="8" class="no-records">Koi truck register nahi.</td></tr>
+            <tbody id="dashboard-payments">
+              <tr class="no-records"><td colspan="4">No pending payments</td></tr>
             </tbody>
           </table>
         </div>
       </div>
+    </div>
+  </div>
+</div>
 
-      <!-- Ledger Records -->
-      <div class="card">
-        <div class="card-head"><div class="dot"></div><h2>📒 Payment Ledger</h2>
-          <div style="margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-            <input class="filter-input" id="tl-search" placeholder="Search truck/driver..." oninput="renderLedger()"/>
+<!-- ========== TRUCKS ========== -->
+<div class="panel">
+  <div class="container">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Truck Management</h2>
+        </div>
+        <div class="card-head-action">
+          <button onclick="openAddTruck()">➕ Naya Truck</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="two-col">
+          <div>
+            <div class="form-section-title">Truck ka Details</div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Truck Number</label>
+                <input type="text" id="tr-number" placeholder="e.g. MH-02-XX-0123"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Truck Type</label>
+                <select id="tr-type">
+                  <option value="">Select Type</option>
+                  <option value="Tipper">Tipper</option>
+                  <option value="Tanker">Tanker</option>
+                  <option value="Container">Container</option>
+                  <option value="Open">Open Truck</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Capacity (Tons)</label>
+                <input type="number" id="tr-capacity" placeholder="e.g. 20"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Status</label>
+                <select id="tr-status">
+                  <option value="Active">✅ Active</option>
+                  <option value="Inactive">❌ Inactive</option>
+                  <option value="Maintenance">⚙️ Maintenance</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Owner Name</label>
+                <input type="text" id="tr-owner" placeholder="e.g. Pukhraj Chhaba"/>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Insurance Valid Till</label>
+                <input type="date" id="tr-insurance"/>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="form-section-title">Rate Card (Rates per Km)</div>
+            <div class="rates-grid">
+              <div class="rate-item">
+                <label>Gitti</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="tr-gitti" placeholder="0" step="0.1"/>
+                </div>
+              </div>
+              <div class="rate-item">
+                <label>Gypsum</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="tr-gypsum" placeholder="0" step="0.1"/>
+                </div>
+              </div>
+              <div class="rate-item">
+                <label>Coal</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="tr-coal" placeholder="0" step="0.1"/>
+                </div>
+              </div>
+              <div class="rate-item">
+                <label>China Clay</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="tr-chinaclay" placeholder="0" step="0.1"/>
+                </div>
+              </div>
+              <div class="rate-item">
+                <label>Ocher</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="tr-ocher" placeholder="0" step="0.1"/>
+                </div>
+              </div>
+              <div class="rate-item">
+                <label>Limestone</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="tr-limestone" placeholder="0" step="0.1"/>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <!-- Download Bar -->
-        <div style="display:flex;gap:8px;align-items:center;padding:10px 16px;background:#f9f5ef;border-bottom:1px solid var(--border);flex-wrap:wrap;">
-          <span style="font-size:0.72rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);">Download:</span>
-          <input type="text" id="tl-dl-truck" placeholder="Truck No. (khali = sab)" list="tl-truck-list2"
-            style="background:var(--bg);border:1px solid var(--border);padding:6px 10px;font-size:0.82rem;color:var(--dark);outline:none;width:160px;"/>
-          <datalist id="tl-truck-list2"></datalist>
-          <button class="btn-sm" onclick="downloadLedgerExcel('truck')" style="background:#1a5276;color:#fff;border-color:#1a5276;">🚛 Truck Wise Excel</button>
-          <input type="month" id="tl-dl-month"
-            style="background:var(--bg);border:1px solid var(--border);padding:6px 10px;font-size:0.82rem;color:var(--dark);outline:none;"/>
-          <button class="btn-sm" onclick="downloadLedgerExcel('month')" style="background:#2e7d52;color:#fff;border-color:#2e7d52;">📆 Month Wise Excel</button>
-          <button class="btn-sm" onclick="downloadLedgerExcel('all')" style="background:#555;color:#fff;border-color:#555;">📊 All Data</button>
+        <button class="btn-submit" onclick="saveTruck()">💾 Truck Save Karo</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>All Trucks List</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tbl-toolbar">
+          <input type="text" id="truck-search" class="filter-input" placeholder="Search by truck number..." onkeyup="filterTrucks()"/>
+          <button class="btn-sm green" onclick="exportTrucks()">📥 Export Excel</button>
         </div>
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
-                <th>#</th>
-                <th>Date</th>
-                <th>Truck No.</th>
-                <th>Driver</th>
+                <th>Truck #</th>
                 <th>Type</th>
-                <th>Amount</th>
-                <th>Mode</th>
-                <th>Remark</th>
-                <th></th>
+                <th>Capacity</th>
+                <th>Owner</th>
+                <th>Status</th>
+                <th>Insurance Till</th>
+                <th>Gitti (₹/Km)</th>
+                <th>Gypsum (₹/Km)</th>
+                <th>Action</th>
               </tr>
             </thead>
-            <tbody id="tl-ledger-body">
-              <tr><td colspan="9" class="no-records">Koi entry nahi.</td></tr>
+            <tbody id="trucks-list">
+              <tr class="no-records"><td colspan="9">No trucks added yet</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-
     </div>
   </div>
 </div>
+
+<!-- ========== DRIVERS ========== -->
+<div class="panel">
+  <div class="container">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Driver Management</h2>
+        </div>
+        <div class="card-head-action">
+          <button onclick="openAddDriver()">➕ Naya Driver</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="two-col">
+          <div>
+            <div class="form-section-title">Driver ki Details</div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Driver Name</label>
+                <input type="text" id="dr-name" placeholder="e.g. Ramesh Kumar"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Mobile Number</label>
+                <input type="text" id="dr-mobile" placeholder="9876543210"/>
+              </div>
+              <div class="form-group">
+                <label>License Number</label>
+                <input type="text" id="dr-license" placeholder="DL-1234"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>License Valid Till</label>
+                <input type="date" id="dr-lic-valid"/>
+              </div>
+              <div class="form-group">
+                <label>Father/Husband Name</label>
+                <input type="text" id="dr-father" placeholder="e.g. Raman Singh"/>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Address</label>
+                <textarea id="dr-address" placeholder="Complete address" style="resize:vertical; height:60px;"></textarea>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="form-section-title">Salary & Rates</div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Monthly Salary (₹)</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="dr-salary" placeholder="20000" step="100"/>
+                </div>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Commission per Trip (₹)</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="dr-commission" placeholder="500" step="10"/>
+                </div>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Status</label>
+                <select id="dr-status">
+                  <option value="Active">✅ Active</option>
+                  <option value="Inactive">❌ Inactive</option>
+                  <option value="Leave">🏥 On Leave</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-submit" onclick="saveDriver()">💾 Driver Save Karo</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>All Drivers List</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tbl-toolbar">
+          <input type="text" id="driver-search" class="filter-input" placeholder="Search by name or mobile..." onkeyup="filterDrivers()"/>
+          <button class="btn-sm green" onclick="exportDrivers()">📥 Export Excel</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>License #</th>
+                <th>License Valid</th>
+                <th>Monthly Salary</th>
+                <th>Commission</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="drivers-list">
+              <tr class="no-records"><td colspan="8">No drivers added yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- ========== TRIPS ========== -->
+<div class="panel">
+  <div class="container">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Trip Entry</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="two-col-form">
+          <div>
+            <div class="form-section-title">Basic Details</div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Truck Number</label>
+                <select id="tp-truck">
+                  <option value="">Select Truck</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Driver Name</label>
+                <select id="tp-driver">
+                  <option value="">Select Driver</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Trip Date</label>
+                <input type="date" id="tp-date"/>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="form-section-title">Material & Rates</div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Material Type</label>
+              </div>
+              <div class="mat-tags" id="tp-material">
+                <span class="mat-tag mt-gitti" onclick="selectMaterial(this, 'Gitti')">Gitti</span>
+                <span class="mat-tag mt-gypsum" onclick="selectMaterial(this, 'Gypsum')">Gypsum</span>
+                <span class="mat-tag mt-coal" onclick="selectMaterial(this, 'Coal')">Coal</span>
+                <span class="mat-tag mt-chinaclay" onclick="selectMaterial(this, 'China Clay')">China Clay</span>
+                <span class="mat-tag mt-ocher" onclick="selectMaterial(this, 'Ocher')">Ocher</span>
+                <span class="mat-tag mt-limestone" onclick="selectMaterial(this, 'Limestone')">Limestone</span>
+              </div>
+            </div>
+            <input type="hidden" id="tp-material-selected"/>
+          </div>
+        </div>
+
+        <div class="two-col-form">
+          <div>
+            <div class="form-section-title">Distance & Rate</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>From Location</label>
+                <input type="text" id="tp-from" placeholder="e.g. Jodhpur"/>
+              </div>
+              <div class="form-group">
+                <label>To Location</label>
+                <input type="text" id="tp-to" placeholder="e.g. Bilayara"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Distance (Km)</label>
+                <input type="number" id="tp-distance" placeholder="0" step="0.1" onchange="calculateTripTotal()"/>
+              </div>
+              <div class="form-group">
+                <label>Rate (₹/Km)</label>
+                <input type="number" id="tp-rate" placeholder="0" step="0.1" onchange="calculateTripTotal()"/>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="form-section-title">Additional Expenses</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Fuel Expense (₹)</label>
+                <input type="number" id="tp-fuel" placeholder="0" step="10" onchange="calculateTripTotal()"/>
+              </div>
+              <div class="form-group">
+                <label>Toll (₹)</label>
+                <input type="number" id="tp-toll" placeholder="0" step="10" onchange="calculateTripTotal()"/>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Repair/Loading (₹)</label>
+                <input type="number" id="tp-repair" placeholder="0" step="10" onchange="calculateTripTotal()"/>
+              </div>
+              <div class="form-group">
+                <label>Other Expense (₹)</label>
+                <input type="number" id="tp-other" placeholder="0" step="10" onchange="calculateTripTotal()"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="calc-box">
+          <div class="calc-item">
+            <div class="calc-label">Total Income (Distance × Rate)</div>
+            <div class="calc-val" id="tp-calc-income">₹0</div>
+          </div>
+          <div class="calc-item">
+            <div class="calc-label">Total Expense</div>
+            <div class="calc-val highlight" id="tp-calc-expense">₹0</div>
+          </div>
+          <div class="calc-item">
+            <div class="calc-label">Net Profit</div>
+            <div class="calc-val green" id="tp-calc-profit">₹0</div>
+          </div>
+        </div>
+
+        <button class="btn-submit" onclick="saveTrip()">💾 Trip Save Karo</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>All Trips</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tbl-toolbar">
+          <input type="text" id="trip-search" class="filter-input" placeholder="Search by truck or driver..." onkeyup="filterTrips()"/>
+          <button class="btn-sm green" onclick="exportTrips()">📥 Export Excel</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Trip ID</th>
+                <th>Truck</th>
+                <th>Driver</th>
+                <th>Material</th>
+                <th>From → To</th>
+                <th>Distance</th>
+                <th>Rate</th>
+                <th>Income</th>
+                <th>Expense</th>
+                <th>Profit</th>
+                <th>Date</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="trips-list">
+              <tr class="no-records"><td colspan="12">No trips added yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== FINANCE (PAYMENTS) ========== -->
+<div class="panel">
+  <div class="container">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Driver Payment Entry</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="two-col-form">
+          <div>
+            <div class="form-section-title">Driver & Payment Date</div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Driver Name</label>
+                <select id="py-driver">
+                  <option value="">Select Driver</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Payment Date</label>
+                <input type="date" id="py-date"/>
+              </div>
+              <div class="form-group">
+                <label>Payment Type</label>
+                <select id="py-type">
+                  <option value="Salary">Salary</option>
+                  <option value="Advance">Advance</option>
+                  <option value="Settlement">Settlement</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="form-section-title">Amount & Notes</div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Amount (₹)</label>
+                <div class="rate-input-row">
+                  <span class="rate-prefix">₹</span>
+                  <input type="number" id="py-amount" placeholder="0" step="100"/>
+                </div>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Notes/Reference</label>
+                <input type="text" id="py-notes" placeholder="e.g. Monthly salary, fuel advance"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-submit" onclick="savePayment()">💾 Payment Save Karo</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Driver Payments History</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tbl-toolbar">
+          <input type="text" id="payment-search" class="filter-input" placeholder="Search by driver name..." onkeyup="filterPayments()"/>
+          <button class="btn-sm green" onclick="exportPayments()">📥 Export Excel</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Payment ID</th>
+                <th>Driver</th>
+                <th>Amount</th>
+                <th>Type</th>
+                <th>Payment Date</th>
+                <th>Notes</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="payments-list">
+              <tr class="no-records"><td colspan="7">No payments recorded yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Driver Account Summary</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Driver Name</th>
+                <th>Total Trips</th>
+                <th>Total Earnings</th>
+                <th>Total Payments</th>
+                <th>Pending Balance</th>
+              </tr>
+            </thead>
+            <tbody id="driver-summary-list">
+              <tr class="no-records"><td colspan="5">No driver data available</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== LEDGER (ACCOUNT TRACKING) ========== -->
+<div class="panel">
+  <div class="container">
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Manual Ledger Entry</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="two-col-form">
+          <div>
+            <div class="form-section-title">Transaction Details</div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Transaction Date</label>
+                <input type="date" id="lg-date"/>
+              </div>
+            </div>
+            <div class="form-row single">
+              <div class="form-group">
+                <label>Description</label>
+                <input type="text" id="lg-desc" placeholder="e.g. Truck maintenance, office rent"/>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="form-section-title">Income & Expense</div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Income (₹)</label>
+                <input type="number" id="lg-income" placeholder="0" step="100"/>
+              </div>
+              <div class="form-group">
+                <label>Expense (₹)</label>
+                <input type="number" id="lg-expense" placeholder="0" step="100"/>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-submit green" onclick="saveLedgerEntry()">💾 Entry Save Karo</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Complete Financial Ledger</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="tbl-toolbar">
+          <input type="text" id="ledger-search" class="filter-input" placeholder="Search by description..." onkeyup="filterLedger()"/>
+          <button class="btn-sm green" onclick="exportLedger()">📥 Export Excel</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Income (₹)</th>
+                <th>Expense (₹)</th>
+                <th>Balance (₹)</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="ledger-list">
+              <tr class="no-records"><td colspan="6">No ledger entries yet</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div class="card-head-title">
+          <div class="dot"></div>
+          <h2>Truck-wise Account Summary</h2>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Truck #</th>
+                <th>Total Trips</th>
+                <th>Total Income (₹)</th>
+                <th>Total Expense (₹)</th>
+                <th>Net Profit (₹)</th>
+              </tr>
+            </thead>
+            <tbody id="truck-account-list">
+              <tr class="no-records"><td colspan="5">No truck data available</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- FOOTER -->
 <footer>
-  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-    <div>
-      <strong style="color:#fff;font-family:'Rajdhani',sans-serif;letter-spacing:2px;">MS TRANSPORT</strong>
-      &nbsp;|&nbsp; Marwar Services &nbsp;|&nbsp; Owner: <span>Pukhraj Chhaba</span>
-      &nbsp;|&nbsp; Raw Material Transport — Rajasthan
-    </div>
-    <div style="display:flex;gap:10px;align-items:center;">
-      <span id="footer-admin-btns" style="display:none;gap:10px;align-items:center;">
-        <button onclick="openCreateUser()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#2e7d52';this.style.color='#2e7d52'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">👤 User Banao</button>
-        <button onclick="openChPwd()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#d4881e';this.style.color='#d4881e'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">🔑 Password Change</button>
-      </span>
-      <button onclick="doLogout()" style="background:none;border:1px solid #444;color:#aaa;padding:7px 16px;font-size:0.78rem;cursor:pointer;font-family:'Noto Sans',sans-serif;letter-spacing:1px;transition:all 0.15s;" onmouseover="this.style.borderColor='#b5451b';this.style.color='#b5451b'" onmouseout="this.style.borderColor='#444';this.style.color='#aaa'">🚪 Logout</button>
-    </div>
-  </div>
-  <div style="margin-top:10px;border-top:1px solid #333;padding-top:10px;color:#555;font-size:0.7rem;letter-spacing:0.5px;">
-    Developed by <span style="color:var(--accent2);">Shekhar Choudhary</span>
-  </div>
+  MS Transport ERP v1.0 | © 2024 <span>Marwar Services</span> | All rights reserved
 </footer>
 
 <script>
-// ============ STATE ============
-// trips and payments declared as window globals above
-let rates    = JSON.parse(localStorage.getItem('mst-rates')    || '{}');
-
-const DEFAULT_MATERIALS = [
-  { key:'gitti',     label:'Gitti',      icon:'🪨' },
-  { key:'gypsum',    label:'Gypsum',     icon:'🟡' },
-  { key:'coal',      label:'Coal',       icon:'⚫' },
-  { key:'chinaclay', label:'China Clay', icon:'🔵' },
-  { key:'ocher',     label:'Red Ocher',  icon:'🔴' },
-  { key:'limestone', label:'Limestone',  icon:'⬜' },
+// ============= LOGIN & AUTH =============
+let currentUser = null;
+let users = JSON.parse(localStorage.getItem('users')) || [
+  { username: 'Marwar Services', password: 'MS@123', displayName: 'Marwar Services', role: 'admin' }
 ];
-
-function getMaterials() {
-  const saved = localStorage.getItem('mst-materials');
-  return saved ? JSON.parse(saved) : DEFAULT_MATERIALS;
-}
-function saveMaterials(mats) {
-  localStorage.setItem('mst-materials', JSON.stringify(mats));
-}
-let MATERIALS = getMaterials();
-
-// ============ INIT ============
-const today = new Date();
-document.getElementById('headerDate').textContent =
-  today.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-document.getElementById('t-date').value = today.toISOString().split('T')[0];
-document.getElementById('d-date').value = today.toISOString().split('T')[0];
-
-// ============ TABS ============
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
-  document.getElementById('panel-'+tab).classList.add('active');
-}
-
-// ============ MATERIAL SELECT ============
-function selectMat(el, name, ctx) {
-  document.querySelectorAll('.mat-tag').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('t-material').value = name;
-  const key = matKey(name);
-  if (rates[key]) {
-    document.getElementById('t-rate').value = rates[key];
-    calcValue();
-  }
-}
-
-function selectExp(el, name) {
-  document.querySelectorAll('.exp-tag').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('d-type').value = name;
-}
-
-function matKey(name) {
-  const n = name.toLowerCase().replace(/\s/g,'');
-  // Check dynamic materials first
-  const mats = getMaterials();
-  const found = mats.find(m => m.label.toLowerCase().replace(/\s/g,'') === n || m.key === n);
-  if (found) return found.key;
-  // fallback
-  if (n.includes('gitti'))    return 'gitti';
-  if (n.includes('gypsum'))   return 'gypsum';
-  if (n.includes('coal'))     return 'coal';
-  if (n.includes('china'))    return 'chinaclay';
-  if (n.includes('ocher') || n.includes('ochre')) return 'ocher';
-  if (n.includes('limestone'))return 'limestone';
-  return n;
-}
-
-// ============ WEIGHT CALC ============
-function calcWeights() {
-  const gross = parseFloat(document.getElementById('t-gross').value) || 0;
-  const tare  = parseFloat(document.getElementById('t-tare').value)  || 0;
-  const net   = gross > 0 ? Math.max(0, gross - tare) : 0;
-
-  document.getElementById('t-net').value  = net > 0 ? net.toFixed(2) : '';
-  document.getElementById('c-gross').textContent = gross ? gross.toFixed(2)+' T' : '— T';
-  document.getElementById('c-tare').textContent  = tare  ? tare.toFixed(2)+' T'  : '— T';
-  document.getElementById('c-net').textContent   = net   ? net.toFixed(2)+' T'   : '— T';
-  calcValue();
-}
-
-function calcNetManual() { calcValue(); }
-
-function calcValue() {
-  const net        = parseFloat(document.getElementById('t-net').value)        || 0;
-  const rate       = parseFloat(document.getElementById('t-rate').value)       || 0;
-  const commission = parseFloat(document.getElementById('t-commission').value) || 500;
-  const malVal     = net * rate;
-  const total      = malVal + commission;
-  document.getElementById('t-value').value = total > 0 ? total.toFixed(0) : '';
-}
-
-// ============ RATES UI ============
-function buildRatesUI() {
-  MATERIALS = getMaterials();
-  const grid = document.getElementById('rates-grid');
-  grid.innerHTML = MATERIALS.map(m => `
-    <div class="rate-item">
-      <label style="display:flex;align-items:center;justify-content:space-between;">
-        <span>${m.icon} ${m.label}</span>
-        ${!DEFAULT_MATERIALS.find(d=>d.key===m.key) ? `<button onclick="deleteMaterial('${m.key}')" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.75rem;padding:0;" title="Delete">✕</button>` : ''}
-      </label>
-      <div class="rate-input-row">
-        <span class="rate-prefix">₹/Ton</span>
-        <input type="number" id="rate-${m.key}" value="${rates[m.key]||''}" placeholder="0" min="0"
-          oninput="rates['${m.key}']=this.value"/>
-      </div>
-    </div>`).join('');
-  buildMatTags();
-}
-
-function buildMatTags() {
-  MATERIALS = getMaterials();
-  const container = document.querySelector('.mat-tags');
-  if (!container) return;
-  container.innerHTML = MATERIALS.map(m => {
-    const cls = 'mt-' + m.key;
-    return `<div class="mat-tag ${cls}" onclick="selectMat(this,'${m.label}','trip')">${m.icon} ${m.label}</div>`;
-  }).join('');
-}
-
-function addNewMaterial() {
-  const name = document.getElementById('new-mat-name').value.trim();
-  const icon = document.getElementById('new-mat-icon').value.trim() || '🔹';
-  const rate = document.getElementById('new-mat-rate').value;
-  const msg  = document.getElementById('new-mat-msg');
-
-  if (!name) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Material ka naam zaroori hai!'; return;
-  }
-  const key = name.toLowerCase().replace(/\s+/g, '');
-  const mats = getMaterials();
-  if (mats.find(m => m.key === key)) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Yeh material pehle se exist karta hai!'; return;
-  }
-  mats.push({ key, label: name, icon });
-  saveMaterials(mats);
-  MATERIALS = mats;
-  if (rate) rates[key] = parseFloat(rate);
-  localStorage.setItem('mst-rates', JSON.stringify(rates));
-
-  document.getElementById('new-mat-name').value = '';
-  document.getElementById('new-mat-icon').value = '';
-  document.getElementById('new-mat-rate').value = '';
-  msg.style.color = 'var(--green)';
-  msg.textContent = '✅ ' + name + ' add ho gaya!';
-  buildRatesUI();
-}
-
-function deleteMaterial(key) {
-  if (!confirm('Yeh material delete karein?')) return;
-  const mats = getMaterials().filter(m => m.key !== key);
-  saveMaterials(mats);
-  MATERIALS = mats;
-  buildRatesUI();
-}
-
-function saveRates() {
-  MATERIALS.forEach(m => {
-    const v = document.getElementById('rate-'+m.key).value;
-    rates[m.key] = v ? parseFloat(v) : 0;
-  });
-  localStorage.setItem('mst-rates', JSON.stringify(rates));
-  const msg = document.getElementById('rates-saved');
-  msg.style.display = 'block';
-  setTimeout(() => msg.style.display='none', 2500);
-}
-
-// ============ ADD TRIP ============
-function addTrip() {
-  const truckNo    = document.getElementById('t-truckNo').value.trim();
-  const driverName = document.getElementById('t-driverName').value.trim();
-  const material   = document.getElementById('t-material').value.trim();
-  if (!truckNo || !driverName || !material) {
-    alert('Truck number, driver naam aur material zaroori hain!'); return;
-  }
-  const net        = parseFloat(document.getElementById('t-net').value) || 0;
-  const rate       = parseFloat(document.getElementById('t-rate').value) || 0;
-  const commission = parseFloat(document.getElementById('t-commission').value) || 500;
-  const malVal     = net * rate;
-  const value      = malVal + commission;
-
-  const entry = {
-    id: Date.now(),
-    truckNo, driverName, material,
-    date:   document.getElementById('t-date').value,
-    net, rate, value, commission,
-    from: document.getElementById('t-from').value.trim()||'-',
-    to:   document.getElementById('t-to').value.trim()||'-',
-    note: document.getElementById('t-note').value.trim(),
-  };
-  // Save to Firestore
-  if (window._dbReady) {
-    _setDoc(_doc(window._db, 'trips', String(entry.id)), entry)
-      .catch(e => console.error('Trip save error:', e));
-  }
-  resetTripForm();
-  // Firestore listener will update UI automatically
-}
-
-function resetTripForm() {
-  ['t-truckNo','t-driverName','t-material','t-net',
-   't-rate','t-value','t-from','t-to','t-note'].forEach(id=>{
-    document.getElementById(id).value='';
-  });
-  document.getElementById('t-commission').value=500;
-  document.getElementById('t-date').value=new Date().toISOString().split('T')[0];
-  document.querySelectorAll('.mat-tag').forEach(t=>t.classList.remove('active'));
-}
-
-// ============ ADD PAYMENT ============
-function addPayment() {
-  const truckNo    = document.getElementById('d-truckNo').value.trim();
-  const driverName = document.getElementById('d-driverName').value.trim();
-  const type       = document.getElementById('d-type').value.trim();
-  const amount     = parseFloat(document.getElementById('d-amount').value)||0;
-  if (!truckNo || !driverName || !type || !amount) {
-    alert('Truck, driver, type aur amount zaroori hain!'); return;
-  }
-  const entry = {
-    id: Date.now(),
-    truckNo, driverName, type, amount,
-    date:    document.getElementById('d-date').value,
-    tripRef: document.getElementById('d-tripRef').value.trim(),
-    litres:  document.getElementById('d-litres').value||'-',
-    odo:     document.getElementById('d-odo').value||'-',
-    receipt: document.getElementById('d-receipt').value.trim()||'-',
-    note:    document.getElementById('d-note').value.trim(),
-  };
-  if (window._dbReady) {
-    _setDoc(_doc(window._db, 'payments', String(entry.id)), entry)
-      .catch(e => console.error('Payment save error:', e));
-  }
-  resetPayForm();
-}
-
-function resetPayForm() {
-  ['d-truckNo','d-driverName','d-type','d-amount','d-tripRef',
-   'd-litres','d-odo','d-receipt','d-note'].forEach(id=>{
-    document.getElementById(id).value='';
-  });
-  document.getElementById('d-date').value=new Date().toISOString().split('T')[0];
-  document.querySelectorAll('.exp-tag').forEach(t=>t.classList.remove('active'));
-}
-
-// ============ RENDER TRIPS ============
-function getBadge(mat) {
-  const k = matKey(mat);
-  const map = {gitti:'b-gitti',gypsum:'b-gypsum',coal:'b-coal',chinaclay:'b-chinaclay',ocher:'b-ocher',limestone:'b-limestone'};
-  return map[k]||'b-default';
-}
-
-function getExpBadge(type) {
-  const t = type.toLowerCase();
-  if(t.includes('advance')) return 'b-advance';
-  if(t.includes('fuel'))    return 'b-fuel';
-  if(t.includes('repair'))  return 'b-repair';
-  if(t.includes('toll'))    return 'b-toll';
-  return 'b-other';
-}
-
-function fmtDate(d) { return d ? new Date(d).toLocaleDateString('en-IN') : '-'; }
-function fmtRs(v)   { return v ? '₹'+Number(v).toLocaleString('en-IN') : '—'; }
-function fmtT(v)    { return v ? v.toFixed(2)+'T' : '—'; }
-
-function renderTrips() {
-  const q = document.getElementById('t-search').value.toLowerCase();
-  const filtered = trips.filter(r =>
-    r.truckNo.toLowerCase().includes(q)||
-    r.driverName.toLowerCase().includes(q)||
-    r.material.toLowerCase().includes(q)
-  );
-  const tbody = document.getElementById('trips-body');
-  if (!filtered.length) {
-    tbody.innerHTML=`<tr><td colspan="11" class="no-records">Koi trip nahi mili.</td></tr>`; return;
-  }
-  let tComm=0, tVal=0;
-  let rows = filtered.map((r,i)=>{
-    tComm += r.commission||0;
-    tVal  += r.value||0;
-    return `<tr>
-      <td style="color:var(--muted);font-size:0.75rem">${filtered.length-i}</td>
-      <td>${fmtDate(r.date)}</td>
-      <td><strong>${r.truckNo}</strong></td>
-      <td>${r.driverName}</td>
-      <td><span class="badge ${getBadge(r.material)}">${r.material}</span></td>
-      <td class="val-blue">${r.net?r.net+'T':'—'}</td>
-      <td>${r.rate?'₹'+r.rate:'-'}</td>
-      <td class="val-red">${fmtRs(r.commission)}</td>
-      <td class="val-green">${fmtRs(r.value)}</td>
-      <td style="color:var(--muted);font-size:0.78rem">${r.from}→${r.to}</td>
-      <td><button class="btn-del" onclick="delTrip(${r.id})">✕</button></td>
-    </tr>`;
-  }).join('');
-  rows += `<tr class="total-row">
-    <td colspan="7" style="text-align:right;padding-right:12px">TOTAL (${filtered.length} trucks)</td>
-    <td class="val-red">₹${tComm.toLocaleString('en-IN')}</td>
-    <td class="val-green">₹${tVal.toLocaleString('en-IN')}</td>
-    <td colspan="2"></td>
-  </tr>`;
-  tbody.innerHTML = rows;
-}
-
-function renderPayments() {
-  const q = document.getElementById('d-search').value.toLowerCase();
-  const filtered = payments.filter(r =>
-    r.truckNo.toLowerCase().includes(q)||
-    r.driverName.toLowerCase().includes(q)||
-    r.type.toLowerCase().includes(q)
-  );
-  const tbody = document.getElementById('payments-body');
-  if (!filtered.length) {
-    tbody.innerHTML=`<tr><td colspan="11" class="no-records">Koi payment entry nahi.</td></tr>`; return;
-  }
-  let total=0;
-  let rows = filtered.map((r,i)=>{
-    total += r.amount||0;
-    return `<tr>
-      <td style="color:var(--muted);font-size:0.75rem">${filtered.length-i}</td>
-      <td>${fmtDate(r.date)}</td>
-      <td><strong>${r.truckNo}</strong></td>
-      <td>${r.driverName}</td>
-      <td><span class="badge ${getExpBadge(r.type)}">${r.type}</span></td>
-      <td class="val-red">${fmtRs(r.amount)}</td>
-      <td>${r.litres!=='-'?r.litres+' L':'—'}</td>
-      <td>${r.odo!=='-'?r.odo+' km':'—'}</td>
-      <td>${r.receipt||'—'}</td>
-      <td style="color:var(--muted);font-size:0.78rem">${r.note||'—'}</td>
-      <td><button class="btn-del" onclick="delPayment(${r.id})">✕</button></td>
-    </tr>`;
-  }).join('');
-  rows += `<tr class="total-row">
-    <td colspan="5" style="text-align:right;padding-right:12px">TOTAL (${filtered.length} entries)</td>
-    <td class="val-red">₹${total.toLocaleString('en-IN')}</td>
-    <td colspan="5"></td>
-  </tr>`;
-  tbody.innerHTML = rows;
-}
-
-// ============ DELETE ============
-function delTrip(id) {
-  if(!confirm('Ye trip delete karein?')) return;
-  if (window._dbReady) {
-    _deleteDoc(_doc(window._db, 'trips', String(id)))
-      .catch(e => console.error('Delete error:', e));
-  }
-}
-function delPayment(id) {
-  if(!confirm('Ye entry delete karein?')) return;
-  if (window._dbReady) {
-    _deleteDoc(_doc(window._db, 'payments', String(id))).catch(()=>{});
-  }
-}
-function clearTrips() {
-  if(!confirm('Saari trip entries delete karein?')) return;
-  if (window._dbReady) {
-    trips.forEach(r => _deleteDoc(_doc(window._db, 'trips', String(r.id))).catch(()=>{}));
-  }
-}
-function clearPayments() {
-  if(!confirm('Saari payment entries delete karein?')) return;
-  if (window._dbReady) {
-    payments.forEach(r => _deleteDoc(_doc(window._db, 'payments', String(r.id))).catch(()=>{}));
-  }
-}
-
-// ============ SUMMARY ============
-function updateTripSummary() {
-  const todayStr = new Date().toISOString().split('T')[0];
-  const tod = trips.filter(r=>r.date===todayStr);
-  document.getElementById('s-todayTrucks').textContent = tod.length;
-  document.getElementById('s-totalTrucks').textContent = trips.length;
-  document.getElementById('s-todayComm').textContent   = '₹'+tod.reduce((s,r)=>s+(r.commission||0),0).toLocaleString('en-IN');
-  document.getElementById('s-totalComm').textContent   = '₹'+trips.reduce((s,r)=>s+(r.commission||0),0).toLocaleString('en-IN');
-  document.getElementById('s-todayValue').textContent  = '₹'+tod.reduce((s,r)=>s+(r.value||0),0).toLocaleString('en-IN');
-}
-
-function updatePaySummary() {
-  const adv  = payments.filter(r=>r.type.toLowerCase().includes('advance')).reduce((s,r)=>s+r.amount,0);
-  const fuel = payments.filter(r=>r.type.toLowerCase().includes('fuel')).reduce((s,r)=>s+r.amount,0);
-  const rep  = payments.filter(r=>r.type.toLowerCase().includes('repair')).reduce((s,r)=>s+r.amount,0);
-  const oth  = payments.filter(r=>!r.type.toLowerCase().includes('advance')&&!r.type.toLowerCase().includes('fuel')&&!r.type.toLowerCase().includes('repair')).reduce((s,r)=>s+r.amount,0);
-  document.getElementById('dp-totalAdv').textContent    = '₹'+adv.toLocaleString('en-IN');
-  document.getElementById('dp-totalFuel').textContent   = '₹'+fuel.toLocaleString('en-IN');
-  document.getElementById('dp-totalRepair').textContent = '₹'+rep.toLocaleString('en-IN');
-  document.getElementById('dp-totalOther').textContent  = '₹'+oth.toLocaleString('en-IN');
-  document.getElementById('dp-totalAll').textContent    = '₹'+payments.reduce((s,r)=>s+r.amount,0).toLocaleString('en-IN');
-}
-
-// ============ LOGIN SYSTEM (MULTI-USER) ============
-const ADMIN_USER    = 'Marwar Services';
-const ADMIN_DISPLAY = 'Pukhraj Chhaba';
-let currentRole    = null;
-let currentDisplay = '';
-
-function getAdminPass() {
-  return localStorage.getItem('mst-password') || 'MS@123';
-}
-function getUsers() {
-  return JSON.parse(localStorage.getItem('mst-users') || '[]');
-}
-function saveUsers(users) {
-  localStorage.setItem('mst-users', JSON.stringify(users));
-}
-
-function checkSession() {
-  const role    = sessionStorage.getItem('mst-role');
-  const display = sessionStorage.getItem('mst-display');
-  if (role) {
-    currentRole    = role;
-    currentDisplay = display || '';
-    document.getElementById('login-overlay').style.display = 'none';
-    applyRoleUI();
-  }
-}
-
-function applyRoleUI() {
-  document.getElementById('header-username').textContent = currentDisplay;
-  const badge = document.getElementById('header-role-badge');
-  if (currentRole === 'admin') {
-    badge.textContent = 'ADMIN';
-    badge.style.background = 'var(--accent)';
-    document.getElementById('footer-admin-btns').style.display = 'flex';
-    document.querySelectorAll('.btn-submit, .btn-del, .btn-sm').forEach(b => b.style.display = '');
-    document.querySelectorAll('.mat-tag, .exp-tag').forEach(el => el.style.pointerEvents = '');
-    document.querySelectorAll('#panel-trip input:not([readonly]), #panel-trip select, #panel-trip textarea, #panel-driver input:not([readonly]), #panel-driver select, #panel-driver textarea, #panel-finance input:not([readonly]), #panel-finance select, #panel-finance textarea, #panel-rates input').forEach(el => el.removeAttribute('disabled'));
-    // Show rates tab
-    document.querySelectorAll('.tab').forEach(t => { t.style.display = ''; });
-  } else {
-    badge.textContent = 'VIEWER';
-    badge.style.background = 'var(--green)';
-    document.getElementById('footer-admin-btns').style.display = 'none';
-    document.querySelectorAll('.btn-submit, .btn-del, .btn-sm.red').forEach(b => b.style.display = 'none');
-    document.querySelectorAll('#panel-trip input, #panel-trip select, #panel-trip textarea, #panel-driver input, #panel-driver select, #panel-driver textarea, #panel-finance input, #panel-finance select, #panel-finance textarea, #panel-rates input').forEach(el => el.setAttribute('disabled', true));
-    document.querySelectorAll('.mat-tag, .exp-tag').forEach(el => el.style.pointerEvents = 'none');
-    // Hide rates tab
-    document.querySelectorAll('.tab').forEach(t => {
-      if (t.getAttribute('onclick') && t.getAttribute('onclick').includes('rates')) t.style.display = 'none';
-    });
-  }
-}
 
 function doLogin() {
   const user = document.getElementById('l-user').value.trim();
-  const pass = document.getElementById('l-pass').value;
-  const err  = document.getElementById('login-err');
-  if (user === ADMIN_USER && pass === getAdminPass()) {
-    sessionStorage.setItem('mst-role', 'admin');
-    sessionStorage.setItem('mst-display', ADMIN_DISPLAY);
-    currentRole = 'admin'; currentDisplay = ADMIN_DISPLAY;
-    document.getElementById('login-overlay').style.display = 'none';
-    err.textContent = ''; applyRoleUI(); return;
+  const pass = document.getElementById('l-pass').value.trim();
+  const err = document.getElementById('login-err');
+  
+  if (!user || !pass) {
+    err.textContent = '❌ Username aur Password dono enter karo';
+    return;
   }
-  const found = getUsers().find(u => u.username === user && u.password === pass);
-  if (found) {
-    sessionStorage.setItem('mst-role', 'viewer');
-    sessionStorage.setItem('mst-display', found.displayName);
-    currentRole = 'viewer'; currentDisplay = found.displayName;
-    document.getElementById('login-overlay').style.display = 'none';
-    err.textContent = ''; applyRoleUI(); return;
+  
+  const foundUser = users.find(u => u.username === user && u.password === pass);
+  if (!foundUser) {
+    err.textContent = '❌ Username ya Password galat hai';
+    return;
   }
-  err.textContent = '❌ Username ya password galat hai!';
-  document.getElementById('l-pass').value = '';
-  document.getElementById('l-pass').focus();
+  
+  currentUser = foundUser;
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  document.getElementById('login-overlay').style.display = 'none';
+  document.getElementById('main-interface').style.display = 'block';
+  document.getElementById('header-user').textContent = foundUser.displayName || foundUser.username;
+  updateHeaderDate();
+  
+  // Initialize trips array if needed
+  if (!window._trips) window._trips = [];
+  if (!window._payments) window._payments = [];
+  if (!window._trucks) window._trucks = [];
+  if (!window._drivers) window._drivers = [];
+  if (!window._finances) window._finances = [];
+  if (!window._ledger) window._ledger = [];
+  
+  loadAllData();
+  updateDashboard();
 }
 
 function doLogout() {
-  if (!confirm('Logout karna chahte hain?')) return;
-  sessionStorage.removeItem('mst-role');
-  sessionStorage.removeItem('mst-display');
-  currentRole = null; currentDisplay = '';
-  document.getElementById('l-user').value = '';
-  document.getElementById('l-pass').value = '';
-  document.getElementById('login-err').textContent = '';
-  document.getElementById('login-overlay').style.display = 'flex';
+  if (confirm('Kya aap logout karna chahte ho?')) {
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    document.getElementById('main-interface').style.display = 'none';
+    document.getElementById('login-overlay').style.display = 'flex';
+    document.getElementById('l-user').value = '';
+    document.getElementById('l-pass').value = '';
+    document.getElementById('login-err').textContent = '';
+  }
 }
 
-// ============ CREATE USER (ADMIN ONLY) ============
-function openCreateUser() {
-  if (currentRole !== 'admin') return;
-  document.getElementById('cu-username').value    = '';
-  document.getElementById('cu-displayname').value = '';
-  document.getElementById('cu-pass').value        = '';
-  document.getElementById('cu-msg').textContent   = '';
-  renderUserList();
-  document.getElementById('createuser-modal').classList.add('open');
-}
-function closeCreateUser() {
-  document.getElementById('createuser-modal').classList.remove('open');
-}
-function createUser() {
-  const username    = document.getElementById('cu-username').value.trim();
-  const displayName = document.getElementById('cu-displayname').value.trim();
-  const password    = document.getElementById('cu-pass').value.trim();
-  const msg         = document.getElementById('cu-msg');
-  if (!username || !displayName || !password) {
-    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Sabhi fields bhari honi chahiye!'; return;
-  }
-  if (password.length < 4) {
-    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Password kam se kam 4 characters!'; return;
-  }
-  if (username === ADMIN_USER) {
-    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Yeh username reserved hai!'; return;
-  }
-  const users = getUsers();
-  if (users.find(u => u.username === username)) {
-    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Yeh username pehle se exist karta hai!'; return;
-  }
-  users.push({ username, displayName, password, role: 'viewer', createdAt: new Date().toISOString() });
-  saveUsers(users);
-  msg.style.color = 'var(--green)';
-  msg.textContent = '✅ User "' + displayName + '" ban gaya!';
-  document.getElementById('cu-username').value    = '';
-  document.getElementById('cu-displayname').value = '';
-  document.getElementById('cu-pass').value        = '';
-  renderUserList();
-}
-function deleteUser(username) {
-  if (!confirm('"' + username + '" user ko delete karein?')) return;
-  saveUsers(getUsers().filter(u => u.username !== username));
-  renderUserList();
-}
-function renderUserList() {
-  const users = getUsers();
-  const div = document.getElementById('cu-userlist');
-  if (!users.length) {
-    div.innerHTML = '<p style="color:var(--muted);font-size:0.8rem;text-align:center;">Koi user abhi nahi bana.</p>'; return;
-  }
-  div.innerHTML = '<p style="font-size:0.7rem;font-weight:600;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px;">Existing Viewer Users</p>'
-    + users.map(u => {
-      const uname = u.username.replace(/'/g, "\\'");
-      return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 10px;background:var(--bg);border:1px solid var(--border);margin-bottom:6px;">'
-        + '<div><strong style="font-size:0.88rem;">' + u.displayName + '</strong>'
-        + '<span style="color:var(--muted);font-size:0.75rem;margin-left:8px;">@' + u.username + '</span>'
-        + '<span style="font-size:0.65rem;padding:1px 6px;background:var(--green);color:#fff;margin-left:6px;letter-spacing:1px;">VIEWER</span></div>'
-        + '<button class="btn-del" onclick="deleteUser(&#39;' + uname + '&#39;)">✕</button></div>';
-    }).join('');
-}
-document.getElementById('createuser-modal').addEventListener('click', function(e){
-  if(e.target === this) closeCreateUser();
-});
-
-// ============ CHANGE PASSWORD (ADMIN) ============
-function openChPwd() {
+function openChpwd() {
+  document.getElementById('chpwd-modal').classList.add('open');
   document.getElementById('cp-current').value = '';
   document.getElementById('cp-new').value = '';
   document.getElementById('cp-confirm').value = '';
   document.getElementById('cp-msg').textContent = '';
-  document.getElementById('cp-msg').style.color = 'var(--accent)';
-  document.getElementById('chpwd-modal').classList.add('open');
 }
-function closeChPwd() {
+
+function closeChpwd() {
   document.getElementById('chpwd-modal').classList.remove('open');
 }
+
 function changePassword() {
-  const current = document.getElementById('cp-current').value;
-  const newp    = document.getElementById('cp-new').value.trim();
-  const confirm = document.getElementById('cp-confirm').value;
-  const msg     = document.getElementById('cp-msg');
-  if (current !== getAdminPass()) {
-    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Purana password galat hai!'; return;
+  const curr = document.getElementById('cp-current').value;
+  const newP = document.getElementById('cp-new').value;
+  const conf = document.getElementById('cp-confirm').value;
+  const msg = document.getElementById('cp-msg');
+  
+  if (curr !== currentUser.password) {
+    msg.textContent = '❌ Purana password galat hai';
+    return;
   }
-  if (newp.length < 4) {
-    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Naya password kam se kam 4 characters!'; return;
+  if (newP.length < 4) {
+    msg.textContent = '❌ Naya password kamse kam 4 character ka hona chahiye';
+    return;
   }
-  if (newp !== confirm) {
-    msg.style.color = 'var(--accent)'; msg.textContent = '❌ Dono passwords match nahi kar rahe!'; return;
+  if (newP !== conf) {
+    msg.textContent = '❌ Naya password match nahi hua';
+    return;
   }
-  localStorage.setItem('mst-password', newp);
-  msg.style.color = 'var(--green)';
-  msg.textContent = '✅ Password badal gaya!';
-  setTimeout(() => closeChPwd(), 1800);
-}
-document.getElementById('chpwd-modal').addEventListener('click', function(e){
-  if(e.target === this) closeChPwd();
-});
-
-// ============ TRUCK LEDGER ============
-let trucks  = window._trucks  = [];
-let ledger  = window._ledger  = [];
-
-document.getElementById('tl-pay-date').value = new Date().toISOString().split('T')[0];
-
-// saveTrucks/saveLedger handled by Firestore
-
-function getTruckPaid(truckNo) {
-  return ledger.filter(e => e.truckNo === truckNo).reduce((s,e) => s + (e.amount||0), 0);
-}
-function getTruckSalary(truckNo) {
-  const t = trucks.find(t => t.truckNo === truckNo);
-  return t ? (t.salary||0) : 0;
+  
+  currentUser.password = newP;
+  const idx = users.findIndex(u => u.username === currentUser.username);
+  if (idx >= 0) users[idx].password = newP;
+  localStorage.setItem('users', JSON.stringify(users));
+  localStorage.setItem('currentUser', JSON.stringify(currentUser));
+  msg.textContent = '✅ Password successfully change hua!';
+  setTimeout(closeChpwd, 1500);
 }
 
-function addTruck() {
-  const truckNo    = document.getElementById('tl-truckNo').value.trim().toUpperCase();
-  const driverName = document.getElementById('tl-driverName').value.trim();
-  const salary     = parseFloat(document.getElementById('tl-salary').value) || 0;
-  const mobile     = document.getElementById('tl-mobile').value.trim();
-  const msg        = document.getElementById('tl-truck-msg');
-
-  if (!truckNo || !driverName || !salary) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Truck number, driver naam aur salary zaroori hai!'; return;
-  }
-  if (trucks.find(t => t.truckNo === truckNo)) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Yeh truck pehle se registered hai!'; return;
-  }
-  const truckEntry = { truckNo, driverName, salary, mobile, addedOn: new Date().toISOString(), id: truckNo };
-  if (window._dbReady) {
-    _setDoc(_doc(window._db, 'trucks', truckNo), truckEntry)
-      .catch(e => console.error('Truck save error:', e));
-  }
-  ['tl-truckNo','tl-driverName','tl-salary','tl-mobile'].forEach(id => document.getElementById(id).value = '');
-  msg.style.color = 'var(--green)';
-  msg.textContent = '✅ Truck register ho gaya!';
+function updateHeaderDate() {
+  const today = new Date().toLocaleDateString('en-IN', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+  document.getElementById('header-date').textContent = today;
 }
 
-function deleteTruck(truckNo) {
-  if (!confirm(truckNo + ' aur iske saare ledger entries delete karein?')) return;
-  if (window._dbReady) {
-    _deleteDoc(_doc(window._db, 'trucks', truckNo)).catch(()=>{});
-    ledger.filter(e => e.truckNo === truckNo).forEach(e =>
-      _deleteDoc(_doc(window._db, 'ledger', String(e.id))).catch(()=>{})
-    );
-  }
+// ============= TAB SWITCHING =============
+function switchTab(idx) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel')[idx].classList.add('active');
+  document.querySelectorAll('.tab')[idx].classList.add('active');
 }
 
-function addLedgerEntry() {
-  const truckNo = document.getElementById('tl-pay-truck').value.trim().toUpperCase();
-  const date    = document.getElementById('tl-pay-date').value;
-  const type    = document.getElementById('tl-pay-type').value;
-  const amount  = parseFloat(document.getElementById('tl-pay-amount').value) || 0;
-  const mode    = document.getElementById('tl-pay-mode').value;
-  const remark  = document.getElementById('tl-pay-remark').value.trim();
-  const msg     = document.getElementById('tl-pay-msg');
+// ============= DATA STORAGE =============
+window._trucks = JSON.parse(localStorage.getItem('trucks')) || [];
+window._drivers = JSON.parse(localStorage.getItem('drivers')) || [];
+window._trips = JSON.parse(localStorage.getItem('trips')) || [];
+window._payments = JSON.parse(localStorage.getItem('payments')) || [];
+window._finances = JSON.parse(localStorage.getItem('finances')) || [];
+window._ledger = JSON.parse(localStorage.getItem('ledger')) || [];
 
-  if (!truckNo || !date || !type || !amount) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Truck, date, type aur amount zaroori hai!'; return;
+function saveTruck() {
+  const number = document.getElementById('tr-number').value.trim();
+  const type = document.getElementById('tr-type').value;
+  const capacity = parseFloat(document.getElementById('tr-capacity').value) || 0;
+  const status = document.getElementById('tr-status').value;
+  const owner = document.getElementById('tr-owner').value.trim();
+  const insurance = document.getElementById('tr-insurance').value;
+  
+  if (!number) {
+    alert('❌ Truck number enter karo');
+    return;
   }
-  if (!trucks.find(t => t.truckNo === truckNo)) {
-    msg.style.color = 'var(--accent)';
-    msg.textContent = '❌ Pehle yeh truck register karo!'; return;
-  }
-  const ledEntry = { id: Date.now(), truckNo, date, type, amount, mode, remark };
-  if (window._dbReady) {
-    _setDoc(_doc(window._db, 'ledger', String(ledEntry.id)), ledEntry)
-      .catch(e => console.error('Ledger save error:', e));
-  }
-  ['tl-pay-truck','tl-pay-amount','tl-pay-remark'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('tl-pay-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('tl-pay-type').value = '';
-  msg.style.color = 'var(--green)';
-  msg.textContent = '✅ Entry save ho gayi!';
+  
+  const truck = {
+    id: 'TR_' + Date.now(),
+    number,
+    type,
+    capacity,
+    status,
+    owner,
+    insurance,
+    rates: {
+      gitti: parseFloat(document.getElementById('tr-gitti').value) || 0,
+      gypsum: parseFloat(document.getElementById('tr-gypsum').value) || 0,
+      coal: parseFloat(document.getElementById('tr-coal').value) || 0,
+      chinaclay: parseFloat(document.getElementById('tr-chinaclay').value) || 0,
+      ocher: parseFloat(document.getElementById('tr-ocher').value) || 0,
+      limestone: parseFloat(document.getElementById('tr-limestone').value) || 0
+    },
+    createdAt: new Date().toISOString()
+  };
+  
+  window._trucks.push(truck);
+  localStorage.setItem('trucks', JSON.stringify(window._trucks));
+  renderTrucks();
+  clearTruckForm();
+  alert('✅ Truck saved! ID: ' + truck.id);
+  updateTruckDatalist();
 }
 
-function delLedgerEntry(id) {
-  if (!confirm('Ye entry delete karein?')) return;
-  if (window._dbReady) {
-    _deleteDoc(_doc(window._db, 'ledger', String(id))).catch(()=>{});
-  }
+function clearTruckForm() {
+  document.getElementById('tr-number').value = '';
+  document.getElementById('tr-type').value = '';
+  document.getElementById('tr-capacity').value = '';
+  document.getElementById('tr-status').value = 'Active';
+  document.getElementById('tr-owner').value = '';
+  document.getElementById('tr-insurance').value = '';
+  document.getElementById('tr-gitti').value = '';
+  document.getElementById('tr-gypsum').value = '';
+  document.getElementById('tr-coal').value = '';
+  document.getElementById('tr-chinaclay').value = '';
+  document.getElementById('tr-ocher').value = '';
+  document.getElementById('tr-limestone').value = '';
 }
 
 function renderTrucks() {
-  const tbody = document.getElementById('tl-trucks-body');
-  if (!trucks.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="no-records">Koi truck register nahi.</td></tr>'; return;
+  const tbody = document.getElementById('trucks-list');
+  tbody.innerHTML = '';
+  
+  if (window._trucks.length === 0) {
+    tbody.innerHTML = '<tr class="no-records"><td colspan="9">No trucks added yet</td></tr>';
+    return;
   }
-  tbody.innerHTML = trucks.map((t, i) => {
-    const paid    = getTruckPaid(t.truckNo);
-    const balance = (t.salary||0) - paid;
-    return '<tr>'
-      + '<td style="color:var(--muted);font-size:0.75rem">' + (i+1) + '</td>'
-      + '<td><strong>' + t.truckNo + '</strong></td>'
-      + '<td>' + t.driverName + '</td>'
-      + '<td style="color:var(--muted)">' + (t.mobile||'-') + '</td>'
-      + '<td class="val-blue">₹' + (t.salary||0).toLocaleString('en-IN') + '</td>'
-      + '<td class="val-green">₹' + paid.toLocaleString('en-IN') + '</td>'
-      + '<td class="' + (balance > 0 ? 'val-red' : 'val-green') + '">₹' + Math.abs(balance).toLocaleString('en-IN') + (balance > 0 ? ' Baaki' : ' Extra') + '</td>'
-      + '<td><button class="btn-del" onclick="deleteTruck(this.dataset.truck)" data-truck="' + t.truckNo + '">✕</button></td>'
-      + '</tr>';
-  }).join('');
+  
+  window._trucks.forEach(t => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${t.number}</strong></td>
+      <td>${t.type}</td>
+      <td>${t.capacity} tons</td>
+      <td>${t.owner}</td>
+      <td><span class="badge ${t.status === 'Active' ? 'b-active' : t.status === 'Maintenance' ? 'b-maintenance' : 'b-inactive'}">${t.status}</span></td>
+      <td>${t.insurance || 'N/A'}</td>
+      <td>₹${t.rates.gitti.toFixed(2)}</td>
+      <td>₹${t.rates.gypsum.toFixed(2)}</td>
+      <td>
+        <button class="btn-edit" onclick="editTruck('${t.id}')">✏️ Edit</button>
+        <button class="btn-del" onclick="deleteTruck('${t.id}')">🗑️ Delete</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
 }
 
-function renderLedger() {
-  const q = document.getElementById('tl-search').value.toLowerCase();
-  const filtered = ledger.filter(e =>
-    e.truckNo.toLowerCase().includes(q) ||
-    (e.remark||'').toLowerCase().includes(q) ||
-    (e.type||'').toLowerCase().includes(q)
-  );
-  const tbody = document.getElementById('tl-ledger-body');
-  if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="9" class="no-records">Koi entry nahi.</td></tr>'; return;
+function deleteTruck(id) {
+  if (confirm('Kya aap is truck ko delete karna chahte ho?')) {
+    window._trucks = window._trucks.filter(t => t.id !== id);
+    localStorage.setItem('trucks', JSON.stringify(window._trucks));
+    renderTrucks();
+    updateTruckDatalist();
+    alert('✅ Truck deleted!');
   }
-  let total = 0;
-  let rows = filtered.map((e, i) => {
-    total += e.amount||0;
-    const truck = trucks.find(t => t.truckNo === e.truckNo);
-    const driver = truck ? truck.driverName : '-';
-    const modeBadge = e.mode === 'Cash' ? '#784212' : e.mode === 'Online Transfer' ? '#1a5276' : e.mode === 'UPI' ? '#1e8449' : '#555';
-    return '<tr>'
-      + '<td style="color:var(--muted);font-size:0.75rem">' + (filtered.length - i) + '</td>'
-      + '<td>' + (e.date ? new Date(e.date).toLocaleDateString('en-IN') : '-') + '</td>'
-      + '<td><strong>' + e.truckNo + '</strong></td>'
-      + '<td>' + driver + '</td>'
-      + '<td><span class="badge" style="background:#7d3c98">' + (e.type||'-') + '</span></td>'
-      + '<td class="val-red">₹' + (e.amount||0).toLocaleString('en-IN') + '</td>'
-      + '<td><span class="badge" style="background:' + modeBadge + '">' + (e.mode||'-') + '</span></td>'
-      + '<td style="color:var(--muted);font-size:0.78rem">' + (e.remark||'-') + '</td>'
-      + '<td><button class="btn-del" onclick="delLedgerEntry(' + e.id + ')">✕</button></td>'
-      + '</tr>';
-  }).join('');
-  rows += '<tr class="total-row"><td colspan="5" style="text-align:right;padding-right:12px">TOTAL (' + filtered.length + ' entries)</td>'
-    + '<td class="val-red">₹' + total.toLocaleString('en-IN') + '</td><td colspan="3"></td></tr>';
-  tbody.innerHTML = rows;
 }
 
-function updateLedgerSummary() {
-  const totalSalary  = trucks.reduce((s,t) => s + (t.salary||0), 0);
-  const totalPaid    = ledger.reduce((s,e) => s + (e.amount||0), 0);
-  const totalKharcha = ledger.filter(e => e.type === 'Kharcha').reduce((s,e) => s + (e.amount||0), 0);
-  const totalBalance = totalSalary - totalPaid;
-  document.getElementById('tl-totalTrucks').textContent  = trucks.length;
-  document.getElementById('tl-totalSalary').textContent  = '₹' + totalSalary.toLocaleString('en-IN');
-  document.getElementById('tl-totalPaid').textContent    = '₹' + totalPaid.toLocaleString('en-IN');
-  document.getElementById('tl-totalBalance').textContent = '₹' + Math.abs(totalBalance).toLocaleString('en-IN');
-  document.getElementById('tl-totalKharcha').textContent = '₹' + totalKharcha.toLocaleString('en-IN');
+function editTruck(id) {
+  const truck = window._trucks.find(t => t.id === id);
+  if (!truck) return;
+  document.getElementById('tr-number').value = truck.number;
+  document.getElementById('tr-type').value = truck.type;
+  document.getElementById('tr-capacity').value = truck.capacity;
+  document.getElementById('tr-status').value = truck.status;
+  document.getElementById('tr-owner').value = truck.owner;
+  document.getElementById('tr-insurance').value = truck.insurance;
+  document.getElementById('tr-gitti').value = truck.rates.gitti;
+  document.getElementById('tr-gypsum').value = truck.rates.gypsum;
+  document.getElementById('tr-coal').value = truck.rates.coal;
+  document.getElementById('tr-chinaclay').value = truck.rates.chinaclay;
+  document.getElementById('tr-ocher').value = truck.rates.ocher;
+  document.getElementById('tr-limestone').value = truck.rates.limestone;
+  
+  // Delete and re-add
+  deleteTruck(id);
+}
+
+function filterTrucks() {
+  const query = document.getElementById('truck-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#trucks-list tr');
+  rows.forEach(row => {
+    if (row.classList.contains('no-records')) return;
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query) ? '' : 'none';
+  });
+}
+
+function openAddTruck() {
+  clearTruckForm();
+  document.querySelector('#tr-number').focus();
 }
 
 function updateTruckDatalist() {
-  ['tl-truck-list','tl-truck-list2'].forEach(id => {
-    const dl = document.getElementById(id);
-    if (dl) dl.innerHTML = trucks.map(t => '<option value="' + t.truckNo + '">' + t.truckNo + ' — ' + t.driverName + '</option>').join('');
+  const tSel = document.getElementById('tp-truck');
+  const currentVal = tSel.value;
+  tSel.innerHTML = '<option value="">Select Truck</option>';
+  window._trucks.filter(t => t.status === 'Active').forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t.number;
+    opt.textContent = `${t.number} (${t.type})`;
+    tSel.appendChild(opt);
+  });
+  tSel.value = currentVal;
+}
+
+// ============= DRIVER FUNCTIONS =============
+function saveDriver() {
+  const name = document.getElementById('dr-name').value.trim();
+  const mobile = document.getElementById('dr-mobile').value.trim();
+  const license = document.getElementById('dr-license').value.trim();
+  
+  if (!name || !mobile) {
+    alert('❌ Driver name aur mobile both required hain');
+    return;
+  }
+  
+  const driver = {
+    id: 'DR_' + Date.now(),
+    name,
+    mobile,
+    license,
+    licenseValidTill: document.getElementById('dr-lic-valid').value,
+    fatherName: document.getElementById('dr-father').value.trim(),
+    address: document.getElementById('dr-address').value.trim(),
+    salary: parseFloat(document.getElementById('dr-salary').value) || 0,
+    commission: parseFloat(document.getElementById('dr-commission').value) || 0,
+    status: document.getElementById('dr-status').value,
+    createdAt: new Date().toISOString()
+  };
+  
+  window._drivers.push(driver);
+  localStorage.setItem('drivers', JSON.stringify(window._drivers));
+  renderDrivers();
+  clearDriverForm();
+  alert('✅ Driver saved! ID: ' + driver.id);
+  updateDriverDatalist();
+  updatePaymentDriverList();
+}
+
+function clearDriverForm() {
+  document.getElementById('dr-name').value = '';
+  document.getElementById('dr-mobile').value = '';
+  document.getElementById('dr-license').value = '';
+  document.getElementById('dr-lic-valid').value = '';
+  document.getElementById('dr-father').value = '';
+  document.getElementById('dr-address').value = '';
+  document.getElementById('dr-salary').value = '';
+  document.getElementById('dr-commission').value = '';
+  document.getElementById('dr-status').value = 'Active';
+}
+
+function renderDrivers() {
+  const tbody = document.getElementById('drivers-list');
+  tbody.innerHTML = '';
+  
+  if (window._drivers.length === 0) {
+    tbody.innerHTML = '<tr class="no-records"><td colspan="8">No drivers added yet</td></tr>';
+    return;
+  }
+  
+  window._drivers.forEach(d => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${d.name}</strong></td>
+      <td>${d.mobile}</td>
+      <td>${d.license}</td>
+      <td>${d.licenseValidTill || 'N/A'}</td>
+      <td>₹${d.salary.toFixed(0)}</td>
+      <td>₹${d.commission.toFixed(0)}</td>
+      <td><span class="badge ${d.status === 'Active' ? 'b-active' : d.status === 'Leave' ? 'b-maintenance' : 'b-inactive'}">${d.status}</span></td>
+      <td>
+        <button class="btn-edit" onclick="editDriver('${d.id}')">✏️ Edit</button>
+        <button class="btn-del" onclick="deleteDriver('${d.id}')">🗑️ Delete</button>
+      </td>
+    `;
+    tbody.appendChild(row);
   });
 }
 
-// ============ LEDGER EXCEL DOWNLOAD ============
-function downloadLedgerExcel(type) {
-  let filtered = [...ledger];
-  let filename  = 'MS_Truck_Ledger';
-
-  if (type === 'truck') {
-    const truckNo = document.getElementById('tl-dl-truck').value.trim().toUpperCase();
-    if (truckNo) {
-      filtered = ledger.filter(e => e.truckNo === truckNo);
-      filename  = 'Ledger_' + truckNo;
-      if (!filtered.length) { alert('Is truck ka koi data nahi!'); return; }
-    }
-  } else if (type === 'month') {
-    const m = document.getElementById('tl-dl-month').value;
-    if (!m) { alert('Pehle month select karo!'); return; }
-    filtered = ledger.filter(e => e.date && e.date.startsWith(m));
-    filename  = 'Ledger_' + m;
-    if (!filtered.length) { alert('Is month ka koi data nahi!'); return; }
+function deleteDriver(id) {
+  if (confirm('Kya aap is driver ko delete karna chahte ho?')) {
+    window._drivers = window._drivers.filter(d => d.id !== id);
+    localStorage.setItem('drivers', JSON.stringify(window._drivers));
+    renderDrivers();
+    updateDriverDatalist();
+    updatePaymentDriverList();
+    alert('✅ Driver deleted!');
   }
+}
 
-  // Build rows
-  const rows = filtered.map((e, i) => {
-    const truck = trucks.find(t => t.truckNo === e.truckNo);
-    return {
-      '#': i + 1,
-      'Date': e.date ? new Date(e.date).toLocaleDateString('en-IN') : '-',
-      'Truck No.': e.truckNo,
-      'Driver': truck ? truck.driverName : '-',
-      'Salary': truck ? truck.salary : '-',
-      'Type': e.type || '-',
-      'Amount (₹)': e.amount || 0,
-      'Payment Mode': e.mode || '-',
-      'Remark': e.remark || '-'
+function editDriver(id) {
+  const driver = window._drivers.find(d => d.id === id);
+  if (!driver) return;
+  document.getElementById('dr-name').value = driver.name;
+  document.getElementById('dr-mobile').value = driver.mobile;
+  document.getElementById('dr-license').value = driver.license;
+  document.getElementById('dr-lic-valid').value = driver.licenseValidTill;
+  document.getElementById('dr-father').value = driver.fatherName;
+  document.getElementById('dr-address').value = driver.address;
+  document.getElementById('dr-salary').value = driver.salary;
+  document.getElementById('dr-commission').value = driver.commission;
+  document.getElementById('dr-status').value = driver.status;
+  deleteDriver(id);
+}
+
+function filterDrivers() {
+  const query = document.getElementById('driver-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#drivers-list tr');
+  rows.forEach(row => {
+    if (row.classList.contains('no-records')) return;
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query) ? '' : 'none';
+  });
+}
+
+function openAddDriver() {
+  clearDriverForm();
+  document.querySelector('#dr-name').focus();
+}
+
+function updateDriverDatalist() {
+  const dSel = document.getElementById('tp-driver');
+  const pyDrSel = document.getElementById('py-driver');
+  const currentVal = dSel.value;
+  const currentPyVal = pyDrSel.value;
+  
+  dSel.innerHTML = '<option value="">Select Driver</option>';
+  pyDrSel.innerHTML = '<option value="">Select Driver</option>';
+  
+  window._drivers.filter(d => d.status === 'Active').forEach(d => {
+    const opt1 = document.createElement('option');
+    opt1.value = d.name;
+    opt1.textContent = d.name;
+    dSel.appendChild(opt1);
+    
+    const opt2 = document.createElement('option');
+    opt2.value = d.name;
+    opt2.textContent = d.name;
+    pyDrSel.appendChild(opt2);
+  });
+  
+  dSel.value = currentVal;
+  pyDrSel.value = currentPyVal;
+}
+
+function updatePaymentDriverList() {
+  updateDriverDatalist();
+}
+
+// ============= TRIP FUNCTIONS =============
+function selectMaterial(elem, material) {
+  document.querySelectorAll('#tp-material .mat-tag').forEach(el => el.classList.remove('active'));
+  elem.classList.add('active');
+  document.getElementById('tp-material-selected').value = material;
+}
+
+function calculateTripTotal() {
+  const distance = parseFloat(document.getElementById('tp-distance').value) || 0;
+  const rate = parseFloat(document.getElementById('tp-rate').value) || 0;
+  const fuel = parseFloat(document.getElementById('tp-fuel').value) || 0;
+  const toll = parseFloat(document.getElementById('tp-toll').value) || 0;
+  const repair = parseFloat(document.getElementById('tp-repair').value) || 0;
+  const other = parseFloat(document.getElementById('tp-other').value) || 0;
+  
+  const income = distance * rate;
+  const expense = fuel + toll + repair + other;
+  const profit = income - expense;
+  
+  document.getElementById('tp-calc-income').textContent = '₹' + income.toFixed(0);
+  document.getElementById('tp-calc-expense').textContent = '₹' + expense.toFixed(0);
+  document.getElementById('tp-calc-profit').textContent = '₹' + profit.toFixed(0);
+}
+
+function saveTrip() {
+  const truck = document.getElementById('tp-truck').value.trim();
+  const driver = document.getElementById('tp-driver').value.trim();
+  const material = document.getElementById('tp-material-selected').value;
+  const date = document.getElementById('tp-date').value;
+  const from = document.getElementById('tp-from').value.trim();
+  const to = document.getElementById('tp-to').value.trim();
+  const distance = parseFloat(document.getElementById('tp-distance').value) || 0;
+  const rate = parseFloat(document.getElementById('tp-rate').value) || 0;
+  
+  if (!truck || !driver || !material || !date || !from || !to || distance <= 0 || rate <= 0) {
+    alert('❌ Sab details sahi se fill karo');
+    return;
+  }
+  
+  const fuel = parseFloat(document.getElementById('tp-fuel').value) || 0;
+  const toll = parseFloat(document.getElementById('tp-toll').value) || 0;
+  const repair = parseFloat(document.getElementById('tp-repair').value) || 0;
+  const other = parseFloat(document.getElementById('tp-other').value) || 0;
+  
+  const income = distance * rate;
+  const totalExpense = fuel + toll + repair + other;
+  
+  const trip = {
+    id: 'TP_' + Date.now(),
+    truck,
+    driver,
+    material,
+    date,
+    from,
+    to,
+    distance,
+    rate,
+    income,
+    expenses: { fuel, toll, repair, other },
+    totalExpense,
+    profit: income - totalExpense,
+    createdAt: new Date().toISOString()
+  };
+  
+  window._trips.push(trip);
+  localStorage.setItem('trips', JSON.stringify(window._trips));
+  renderTrips();
+  clearTripForm();
+  alert('✅ Trip saved! ID: ' + trip.id);
+  updateTripSummary();
+}
+
+function clearTripForm() {
+  document.getElementById('tp-truck').value = '';
+  document.getElementById('tp-driver').value = '';
+  document.getElementById('tp-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('tp-from').value = '';
+  document.getElementById('tp-to').value = '';
+  document.getElementById('tp-distance').value = '';
+  document.getElementById('tp-rate').value = '';
+  document.getElementById('tp-fuel').value = '';
+  document.getElementById('tp-toll').value = '';
+  document.getElementById('tp-repair').value = '';
+  document.getElementById('tp-other').value = '';
+  document.querySelectorAll('#tp-material .mat-tag').forEach(el => el.classList.remove('active'));
+  document.getElementById('tp-material-selected').value = '';
+  document.getElementById('tp-calc-income').textContent = '₹0';
+  document.getElementById('tp-calc-expense').textContent = '₹0';
+  document.getElementById('tp-calc-profit').textContent = '₹0';
+}
+
+function renderTrips() {
+  const tbody = document.getElementById('trips-list');
+  tbody.innerHTML = '';
+  
+  if (window._trips.length === 0) {
+    tbody.innerHTML = '<tr class="no-records"><td colspan="12">No trips added yet</td></tr>';
+    return;
+  }
+  
+  window._trips.slice().reverse().forEach(tp => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${tp.id}</strong></td>
+      <td>${tp.truck}</td>
+      <td>${tp.driver}</td>
+      <td><span class="badge b-${tp.material.toLowerCase().replace(/\s+/g,'')}">${tp.material}</span></td>
+      <td>${tp.from} → ${tp.to}</td>
+      <td>${tp.distance.toFixed(1)} km</td>
+      <td>₹${tp.rate.toFixed(2)}</td>
+      <td class="val-green">₹${tp.income.toFixed(0)}</td>
+      <td class="val-red">₹${tp.totalExpense.toFixed(0)}</td>
+      <td class="val-green">₹${tp.profit.toFixed(0)}</td>
+      <td>${tp.date}</td>
+      <td>
+        <button class="btn-del" onclick="deleteTrip('${tp.id}')">🗑️ Delete</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function deleteTrip(id) {
+  if (confirm('Kya aap is trip ko delete karna chahte ho?')) {
+    window._trips = window._trips.filter(t => t.id !== id);
+    localStorage.setItem('trips', JSON.stringify(window._trips));
+    renderTrips();
+    updateTripSummary();
+    alert('✅ Trip deleted!');
+  }
+}
+
+function filterTrips() {
+  const query = document.getElementById('trip-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#trips-list tr');
+  rows.forEach(row => {
+    if (row.classList.contains('no-records')) return;
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query) ? '' : 'none';
+  });
+}
+
+function updateTripSummary() {
+  // Will be called from renderTrips
+}
+
+// ============= PAYMENT FUNCTIONS =============
+function savePayment() {
+  const driver = document.getElementById('py-driver').value.trim();
+  const date = document.getElementById('py-date').value;
+  const type = document.getElementById('py-type').value;
+  const amount = parseFloat(document.getElementById('py-amount').value) || 0;
+  const notes = document.getElementById('py-notes').value.trim();
+  
+  if (!driver || !date || amount <= 0) {
+    alert('❌ Driver, Date aur Amount fill karo');
+    return;
+  }
+  
+  const payment = {
+    id: 'PY_' + Date.now(),
+    driver,
+    date,
+    type,
+    amount,
+    notes,
+    createdAt: new Date().toISOString()
+  };
+  
+  window._payments.push(payment);
+  localStorage.setItem('payments', JSON.stringify(window._payments));
+  renderPayments();
+  clearPaymentForm();
+  alert('✅ Payment saved! ID: ' + payment.id);
+  updatePaySummary();
+}
+
+function clearPaymentForm() {
+  document.getElementById('py-driver').value = '';
+  document.getElementById('py-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('py-type').value = 'Salary';
+  document.getElementById('py-amount').value = '';
+  document.getElementById('py-notes').value = '';
+}
+
+function renderPayments() {
+  const tbody = document.getElementById('payments-list');
+  tbody.innerHTML = '';
+  
+  if (window._payments.length === 0) {
+    tbody.innerHTML = '<tr class="no-records"><td colspan="7">No payments recorded yet</td></tr>';
+    return;
+  }
+  
+  window._payments.slice().reverse().forEach(py => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${py.id}</strong></td>
+      <td>${py.driver}</td>
+      <td class="val-red">₹${py.amount.toFixed(0)}</td>
+      <td><span class="badge ${py.type === 'Salary' ? 'b-default' : py.type === 'Advance' ? 'b-advance' : 'b-default'}">${py.type}</span></td>
+      <td>${py.date}</td>
+      <td>${py.notes}</td>
+      <td>
+        <button class="btn-del" onclick="deletePayment('${py.id}')">🗑️ Delete</button>
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+  
+  // Driver summary
+  const summaryTbody = document.getElementById('driver-summary-list');
+  summaryTbody.innerHTML = '';
+  
+  const driverMap = {};
+  window._drivers.forEach(d => {
+    driverMap[d.name] = {
+      trips: 0,
+      earnings: 0,
+      payments: 0
     };
   });
-
-  // Per truck summary at end
-  const truckNos = [...new Set(filtered.map(e => e.truckNo))];
-  rows.push({ '#': '', 'Date': '', 'Truck No.': '', 'Driver': '', 'Salary': '', 'Type': '', 'Amount (₹)': '', 'Payment Mode': '', 'Remark': '' });
-  rows.push({ '#': '---', 'Date': 'SUMMARY', 'Truck No.': '', 'Driver': '', 'Salary': '', 'Type': '', 'Amount (₹)': '', 'Payment Mode': '', 'Remark': '' });
-  truckNos.forEach(tn => {
-    const truck   = trucks.find(t => t.truckNo === tn);
-    const paid    = filtered.filter(e => e.truckNo === tn).reduce((s,e) => s + (e.amount||0), 0);
-    const salary  = truck ? (truck.salary||0) : 0;
-    const balance = salary - paid;
-    rows.push({
-      '#': '',
-      'Date': '',
-      'Truck No.': tn,
-      'Driver': truck ? truck.driverName : '-',
-      'Salary': salary,
-      'Type': 'TOTAL DIYA',
-      'Amount (₹)': paid,
-      'Payment Mode': balance > 0 ? '⚠ BAAKI: ₹'+balance.toLocaleString('en-IN') : '✅ CLEAR',
-      'Remark': ''
-    });
+  
+  window._trips.forEach(t => {
+    if (driverMap[t.driver]) {
+      driverMap[t.driver].trips++;
+      driverMap[t.driver].earnings += t.income;
+    }
   });
-
-  const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [{wch:4},{wch:12},{wch:14},{wch:16},{wch:12},{wch:12},{wch:14},{wch:16},{wch:24}];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Truck Ledger');
-  XLSX.writeFile(wb, filename + '.xlsx');
-}
-
-// Clear old session format if exists, then check
-if (sessionStorage.getItem('mst-loggedin')) {
-  sessionStorage.removeItem('mst-loggedin');
-}
-// ============ EXCEL DOWNLOAD ============
-function downloadTripExcel(type) {
-  let filtered = [...trips];
-  let filename = 'MS_Transport_Trips';
-
-  if (type === 'date') {
-    const d = document.getElementById('t-dl-date').value;
-    if (!d) { alert('Pehle date select karo!'); return; }
-    filtered = trips.filter(r => r.date === d);
-    filename = 'Trips_' + d;
-    if (!filtered.length) { alert('Is date ka koi data nahi!'); return; }
-  } else if (type === 'month') {
-    const m = document.getElementById('t-dl-month').value;
-    if (!m) { alert('Pehle month select karo!'); return; }
-    filtered = trips.filter(r => r.date && r.date.startsWith(m));
-    const [yr, mo] = m.split('-');
-    const mNames = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    filename = 'Trips_' + mNames[parseInt(mo)] + '_' + yr;
-    if (!filtered.length) { alert('Is month ka koi data nahi!'); return; }
-  } else {
-    filename = 'MS_Transport_All_Trips';
-  }
-
-  const rows = filtered.map((r, i) => ({
-    '#': i + 1,
-    'Date': r.date ? new Date(r.date).toLocaleDateString('en-IN') : '-',
-    'Truck No.': r.truckNo,
-    'Driver': r.driverName,
-    'Material': r.material,
-    'Net Weight (T)': r.net || 0,
-    'Rate (₹/T)': r.rate || 0,
-    'Commission (₹)': r.commission || 0,
-    'Total Amount (₹)': r.value || 0,
-    'From': r.from || '-',
-    'To': r.to || '-',
-    'Note': r.note || ''
-  }));
-
-  // Add total row
-  rows.push({
-    '#': '',
-    'Date': '',
-    'Truck No.': 'TOTAL',
-    'Driver': filtered.length + ' Trucks',
-    'Material': '',
-    'Net Weight (T)': filtered.reduce((s,r) => s + (r.net||0), 0).toFixed(2),
-    'Rate (₹/T)': '',
-    'Commission (₹)': filtered.reduce((s,r) => s + (r.commission||0), 0),
-    'Total Amount (₹)': filtered.reduce((s,r) => s + (r.value||0), 0),
-    'From': '', 'To': '', 'Note': ''
+  
+  window._payments.forEach(p => {
+    if (driverMap[p.driver]) {
+      driverMap[p.driver].payments += p.amount;
+    }
   });
-
-  const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [
-    {wch:4},{wch:12},{wch:14},{wch:16},{wch:12},
-    {wch:14},{wch:12},{wch:14},{wch:16},{wch:10},{wch:10},{wch:20}
-  ];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Trip Records');
-  XLSX.writeFile(wb, filename + '.xlsx');
-}
-
-function downloadPayExcel(type) {
-  let filtered = [...payments];
-  let filename = 'MS_Transport_Payments';
-
-  if (type === 'date') {
-    const d = document.getElementById('d-dl-date').value;
-    if (!d) { alert('Pehle date select karo!'); return; }
-    filtered = payments.filter(r => r.date === d);
-    filename = 'Payments_' + d;
-    if (!filtered.length) { alert('Is date ka koi data nahi!'); return; }
-  } else if (type === 'month') {
-    const m = document.getElementById('d-dl-month').value;
-    if (!m) { alert('Pehle month select karo!'); return; }
-    filtered = payments.filter(r => r.date && r.date.startsWith(m));
-    const [yr, mo] = m.split('-');
-    const mNames = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    filename = 'Payments_' + mNames[parseInt(mo)] + '_' + yr;
-    if (!filtered.length) { alert('Is month ka koi data nahi!'); return; }
-  } else {
-    filename = 'MS_Transport_All_Payments';
-  }
-
-  const rows = filtered.map((r, i) => ({
-    '#': i + 1,
-    'Date': r.date ? new Date(r.date).toLocaleDateString('en-IN') : '-',
-    'Truck No.': r.truckNo,
-    'Driver': r.driverName,
-    'Type': r.type,
-    'Amount (₹)': r.amount || 0,
-    'Fuel (L)': r.litres !== '-' ? r.litres : '',
-    'Odometer (km)': r.odo !== '-' ? r.odo : '',
-    'Receipt No.': r.receipt || '-',
-    'Note': r.note || ''
-  }));
-
-  // Add total row
-  rows.push({
-    '#': '',
-    'Date': '',
-    'Truck No.': 'TOTAL',
-    'Driver': filtered.length + ' Entries',
-    'Type': '',
-    'Amount (₹)': filtered.reduce((s,r) => s + (r.amount||0), 0),
-    'Fuel (L)': '', 'Odometer (km)': '', 'Receipt No.': '', 'Note': ''
+  
+  Object.entries(driverMap).forEach(([name, data]) => {
+    const pending = data.earnings - data.payments;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td><strong>${name}</strong></td>
+      <td>${data.trips}</td>
+      <td class="val-green">₹${data.earnings.toFixed(0)}</td>
+      <td class="val-red">₹${data.payments.toFixed(0)}</td>
+      <td class="val-${pending > 0 ? 'green' : 'red'}">₹${pending.toFixed(0)}</td>
+    `;
+    summaryTbody.appendChild(row);
   });
-
-  const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [
-    {wch:4},{wch:12},{wch:14},{wch:16},{wch:12},
-    {wch:14},{wch:10},{wch:14},{wch:14},{wch:20}
-  ];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Payment Records');
-  XLSX.writeFile(wb, filename + '.xlsx');
 }
 
-
-// ============ TRUCK FINANCES ============
-// finances array already declared as window._finances above
-
-function selectFinance(el, name) {
-  document.querySelectorAll('.tf-tag').forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('f-type').value = name;
-}
-
-function addFinance() {
-  const truckNo    = document.getElementById('f-truckNo').value.trim();
-  const driverName = document.getElementById('f-driverName').value.trim();
-  const type       = document.getElementById('f-type').value.trim();
-  const amount     = parseFloat(document.getElementById('f-amount').value)||0;
-  const mode       = document.getElementById('f-mode').value.trim();
-  if (!truckNo || !driverName || !type || !amount || !mode) {
-    alert('Truck, driver, type, amount aur mode zaroori hain!'); return;
+function deletePayment(id) {
+  if (confirm('Kya aap is payment ko delete karna chahte ho?')) {
+    window._payments = window._payments.filter(p => p.id !== id);
+    localStorage.setItem('payments', JSON.stringify(window._payments));
+    renderPayments();
+    updatePaySummary();
+    alert('✅ Payment deleted!');
   }
+}
+
+function filterPayments() {
+  const query = document.getElementById('payment-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#payments-list tr');
+  rows.forEach(row => {
+    if (row.classList.contains('no-records')) return;
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query) ? '' : 'none';
+  });
+}
+
+function updatePaySummary() {
+  // Will be called from renderPayments
+}
+
+// ============= LEDGER FUNCTIONS =============
+function saveLedgerEntry() {
+  const date = document.getElementById('lg-date').value;
+  const desc = document.getElementById('lg-desc').value.trim();
+  const income = parseFloat(document.getElementById('lg-income').value) || 0;
+  const expense = parseFloat(document.getElementById('lg-expense').value) || 0;
+  
+  if (!date || !desc || (income <= 0 && expense <= 0)) {
+    alert('❌ Date, Description aur kum se kam ek amount fill karo');
+    return;
+  }
+  
   const entry = {
-    id: Date.now(), truckNo, driverName, type, amount,
-    date:   document.getElementById('f-date').value,
-    mode,
-    ref:    document.getElementById('f-ref').value.trim()||'-',
-    bank:   document.getElementById('f-bank').value.trim()||'-',
-    remark: document.getElementById('f-remark').value.trim(),
+    id: 'LG_' + Date.now(),
+    date,
+    description: desc,
+    income,
+    expense,
+    createdAt: new Date().toISOString()
   };
-  if (window._dbReady) {
-    _setDoc(_doc(window._db, 'finances', String(entry.id)), entry)
-      .catch(e => console.error('Finance save error:', e));
+  
+  window._ledger.push(entry);
+  localStorage.setItem('ledger', JSON.stringify(window._ledger));
+  renderLedger();
+  clearLedgerForm();
+  alert('✅ Ledger entry saved! ID: ' + entry.id);
+  updateLedgerSummary();
+}
+
+function clearLedgerForm() {
+  document.getElementById('lg-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('lg-desc').value = '';
+  document.getElementById('lg-income').value = '';
+  document.getElementById('lg-expense').value = '';
+}
+
+function renderLedger() {
+  const tbody = document.getElementById('ledger-list');
+  tbody.innerHTML = '';
+  
+  if (window._ledger.length === 0 && window._trips.length === 0) {
+    tbody.innerHTML = '<tr class="no-records"><td colspan="6">No ledger entries yet</td></tr>';
+    return;
   }
-  resetFinanceForm();
-}
-
-function resetFinanceForm() {
-  ['f-truckNo','f-driverName','f-type','f-amount','f-ref','f-bank','f-remark'].forEach(id=>{
-    document.getElementById(id).value='';
-  });
-  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
-  document.getElementById('f-mode').value = '';
-  document.querySelectorAll('.tf-tag').forEach(t=>t.classList.remove('active'));
-}
-
-function getFinanceBadge(type) {
-  const t = type.toLowerCase();
-  if(t.includes('advance'))   return 'b-advance';
-  if(t.includes('salary'))    return 'b-salary';
-  if(t.includes('deduction')) return 'b-deduction';
-  return 'b-default';
-}
-
-function renderFinance() {
-  const q = document.getElementById('f-search').value.toLowerCase();
-  const filtered = finances.filter(r =>
-    r.truckNo.toLowerCase().includes(q) ||
-    r.driverName.toLowerCase().includes(q) ||
-    r.type.toLowerCase().includes(q)
-  );
-  const tbody = document.getElementById('finance-body');
-  if (!filtered.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="no-records">Koi finance entry nahi.</td></tr>'; return;
-  }
-  tbody.innerHTML = filtered.map((r,i) => '<tr>'
-    + '<td style="color:var(--muted);font-size:0.75rem">' + (filtered.length-i) + '</td>'
-    + '<td>' + fmtDate(r.date) + '</td>'
-    + '<td><strong>' + r.truckNo + '</strong></td>'
-    + '<td>' + r.driverName + '</td>'
-    + '<td><span class="badge ' + getFinanceBadge(r.type) + '">' + r.type + '</span></td>'
-    + '<td class="val-green">' + fmtRs(r.amount) + '</td>'
-    + '<td style="font-size:0.78rem;">' + r.mode + '</td>'
-    + '<td style="color:var(--muted);font-size:0.78rem">' + (r.ref||'—') + '</td>'
-    + '<td style="color:var(--muted);font-size:0.78rem">' + (r.remark||'—') + '</td>'
-    + '<td><button class="btn-del" onclick="delFinance(' + r.id + ')">✕</button></td>'
-    + '</tr>'
-  ).join('');
-}
-
-function delFinance(id) {
-  if(!confirm('Ye finance entry delete karein?')) return;
-  if (window._dbReady) {
-    _deleteDoc(_doc(window._db, 'finances', String(id))).catch(()=>{});
-  }
-}
-
-function clearFinance() {
-  if(!confirm('Saari finance entries delete karein?')) return;
-  if (window._dbReady) {
-    finances.forEach(r => _deleteDoc(_doc(window._db, 'finances', String(r.id))).catch(()=>{}));
-  }
-}
-
-function updateTruckList() {
-  const truckNos = [...new Set(finances.map(f => f.truckNo))].sort();
-  const sel = document.getElementById('f-search-truck');
-  const currentVal = sel.value;
-  sel.innerHTML = '<option value="">-- Sab Trucks --</option>' + truckNos.map(t => '<option value="' + t + '">' + t + '</option>').join('');
-  sel.value = currentVal;
-  updateTruckSummary();
-}
-
-function updateTruckSummary() {
-  const truckFilter = document.getElementById('f-search-truck').value;
-  const filtered = truckFilter ? finances.filter(f => f.truckNo === truckFilter) : finances;
-  const advance   = filtered.filter(f=>f.type.toLowerCase().includes('advance')).reduce((s,f)=>s+f.amount,0);
-  const salary    = filtered.filter(f=>f.type.toLowerCase().includes('salary')).reduce((s,f)=>s+f.amount,0);
-  const deduction = filtered.filter(f=>f.type.toLowerCase().includes('deduction')).reduce((s,f)=>s+f.amount,0);
-  const balance   = salary + advance - deduction;
-  document.getElementById('fs-advance').textContent   = '₹'+advance.toLocaleString('en-IN');
-  document.getElementById('fs-salary').textContent    = '₹'+salary.toLocaleString('en-IN');
-  document.getElementById('fs-deduction').textContent = '₹'+deduction.toLocaleString('en-IN');
-  document.getElementById('fs-balance').textContent   = '₹'+balance.toLocaleString('en-IN');
-  document.getElementById('fs-balance').style.color   = balance >= 0 ? 'var(--green)' : 'var(--accent)';
-}
-
-function downloadFinanceExcel(type) {
-  let rows = [];
-  let filename = 'MS_Transport_Finance';
-  if (type === 'truck') {
-    const truckNos = [...new Set(finances.map(f=>f.truckNo))].sort();
-    truckNos.forEach(tn => {
-      const td = finances.filter(f=>f.truckNo===tn);
-      td.forEach((r,idx) => rows.push({
-        'Truck No.': idx===0?tn:'', 'Date': r.date?new Date(r.date).toLocaleDateString('en-IN'):'-',
-        'Driver': r.driverName, 'Type': r.type, 'Amount (Rs)': r.amount,
-        'Mode': r.mode, 'Reference': r.ref||'-', 'Remarks': r.remark||''
-      }));
-      rows.push({'Truck No.':'TOTAL','Date':'','Driver':'','Type':'',
-        'Amount (Rs)': td.reduce((s,f)=>s+f.amount,0),'Mode':'','Reference':'','Remarks':''});
-      rows.push({'Truck No.':'','Date':'','Driver':'','Type':'','Amount (Rs)':'','Mode':'','Reference':'','Remarks':''});
+  
+  const allEntries = [];
+  
+  // Add manual ledger entries
+  window._ledger.forEach(e => {
+    allEntries.push({
+      date: e.date,
+      description: e.description,
+      income: e.income,
+      expense: e.expense,
+      id: e.id
     });
-    filename = 'Finance_Truck_Wise_Report';
-  } else {
-    rows = finances.map((r,i) => ({
-      '#': i+1, 'Date': r.date?new Date(r.date).toLocaleDateString('en-IN'):'-',
-      'Truck No.': r.truckNo, 'Driver': r.driverName, 'Type': r.type,
-      'Amount (Rs)': r.amount, 'Mode': r.mode, 'Reference': r.ref||'-', 'Remarks': r.remark||''
-    }));
-    rows.push({'#':'','Date':'','Truck No.':'TOTAL','Driver':finances.length+' Entries','Type':'',
-      'Amount (Rs)':finances.reduce((s,r)=>s+r.amount,0),'Mode':'','Reference':'','Remarks':''});
-    filename = 'MS_Transport_All_Finance';
-  }
-  const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [{wch:4},{wch:12},{wch:14},{wch:16},{wch:12},{wch:14},{wch:12},{wch:14},{wch:20}];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Finance Records');
-  XLSX.writeFile(wb, filename + '.xlsx');
+  });
+  
+  // Add trip entries
+  window._trips.forEach(t => {
+    allEntries.push({
+      date: t.date,
+      description: `Trip: ${t.truck} (${t.driver}) - ${t.from} to ${t.to}`,
+      income: t.income,
+      expense: t.totalExpense,
+      id: t.id
+    });
+  });
+  
+  // Add payment entries (as expense)
+  window._payments.forEach(p => {
+    allEntries.push({
+      date: p.date,
+      description: `Payment: ${p.driver} (${p.type}) - ${p.notes}`,
+      income: 0,
+      expense: p.amount,
+      id: p.id
+    });
+  });
+  
+  // Sort by date
+  allEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  let balance = 0;
+  allEntries.forEach(e => {
+    balance += e.income - e.expense;
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${e.date}</td>
+      <td>${e.description}</td>
+      <td class="${e.income > 0 ? 'val-green' : ''}">${e.income > 0 ? '₹' + e.income.toFixed(0) : '-'}</td>
+      <td class="${e.expense > 0 ? 'val-red' : ''}">${e.expense > 0 ? '₹' + e.expense.toFixed(0) : '-'}</td>
+      <td class="${balance >= 0 ? 'val-green' : 'val-red'}"><strong>₹${balance.toFixed(0)}</strong></td>
+      <td>
+        ${e.id && e.id.startsWith('LG_') ? `<button class="btn-del" onclick="deleteLedgerEntry('${e.id}')">🗑️ Delete</button>` : ''}
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
 }
 
-// ============ MASTER INIT ============
-document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
-buildRatesUI();
-buildMatTags();
-renderTrips();
-renderPayments();
-renderFinance();
-updateTripSummary();
-updatePaySummary();
-updateTruckList();
-renderTrucks();
-renderLedger();
-updateLedgerSummary();
-updateTruckDatalist();
-checkSession();
+function deleteLedgerEntry(id) {
+  if (confirm('Kya aap is entry ko delete karna chahte ho?')) {
+    window._ledger = window._ledger.filter(e => e.id !== id);
+    localStorage.setItem('ledger', JSON.stringify(window._ledger));
+    renderLedger();
+    updateLedgerSummary();
+    alert('✅ Entry deleted!');
+  }
+}
+
+function filterLedger() {
+  const query = document.getElementById('ledger-search').value.toLowerCase();
+  const rows = document.querySelectorAll('#ledger-list tr');
+  rows.forEach(row => {
+    if (row.classList.contains('no-records')) return;
+    const text = row.textContent.toLowerCase();
+    row.style.display = text.includes(query) ? '' : 'none';
+  });
+}
+
+function updateLedgerSummary() {
+  // Truck-wise summary
+  const summaryTbody = document.getElementById('truck-account-list');
+  summaryTbody.innerHTML = '';
+  
+  const truckMap = {};
+  window._trucks.forEach(t => {
+    truckMap[t.number] = {
+      trips: 0,
+      income: 0,
+      expense: 0
+    };
+  });
+  
+  window._trips.forEach(t => {
+    if (truckMap[t.truck]) {
+      truckMap[t.truck].trips++;
+      truckMap[t.truck].income += t.income;
+      truckMap[t.truck].expense += t.totalExpense;
+    }
+  });
+  
+  Object.entries(truckMap).forEach(([truck, data]) => {
+    if (data.trips === 0) return;
+    const row = document.createElement('tr');
+    const profit = data.income - data.expense;
+    row.innerHTML = `
+      <td><strong>${truck}</strong></td>
+      <td>${data.trips}</td>
+      <td class="val-green">₹${data.income.toFixed(0)}</td>
+      <td class="val-red">₹${data.expense.toFixed(0)}</td>
+      <td class="val-${profit >= 0 ? 'green' : 'red'}">₹${profit.toFixed(0)}</td>
+    `;
+    summaryTbody.appendChild(row);
+  });
+}
+
+// ============= DASHBOARD =============
+function updateDashboard() {
+  document.getElementById('ds-trucks').textContent = window._trucks.length;
+  document.getElementById('ds-drivers').textContent = window._drivers.length;
+  document.getElementById('ds-trips').textContent = window._trips.length;
+  
+  let totalIncome = 0;
+  let totalExpense = 0;
+  
+  window._trips.forEach(t => {
+    totalIncome += t.income;
+    totalExpense += t.totalExpense;
+  });
+  
+  window._payments.forEach(p => {
+    totalExpense += p.amount;
+  });
+  
+  window._ledger.forEach(e => {
+    totalIncome += e.income;
+    totalExpense += e.expense;
+  });
+  
+  document.getElementById('ds-income').textContent = '₹' + totalIncome.toFixed(0);
+  document.getElementById('ds-expense').textContent = '₹' + totalExpense.toFixed(0);
+  document.getElementById('ds-balance').textContent = '₹' + (totalIncome - totalExpense).toFixed(0);
+  
+  // Recent trips
+  const tbody = document.getElementById('dashboard-trips');
+  tbody.innerHTML = '';
+  window._trips.slice(-10).reverse().forEach(tp => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${tp.id}</td>
+      <td>${tp.truck}</td>
+      <td>${tp.driver}</td>
+      <td><span class="badge b-default">${tp.material}</span></td>
+      <td>${tp.from} → ${tp.to}</td>
+      <td>₹${tp.rate.toFixed(2)}</td>
+      <td>${tp.distance.toFixed(1)} km</td>
+      <td class="val-green">₹${tp.income.toFixed(0)}</td>
+      <td>${tp.date}</td>
+    `;
+    tbody.appendChild(row);
+  });
+  if (window._trips.length === 0) {
+    tbody.innerHTML = '<tr class="no-records"><td colspan="9">No trips yet</td></tr>';
+  }
+  
+  // Pending payments
+  const payTbody = document.getElementById('dashboard-payments');
+  payTbody.innerHTML = '';
+  const driverPayStatus = {};
+  
+  window._drivers.forEach(d => {
+    const tripTotal = window._trips
+      .filter(t => t.driver === d.name)
+      .reduce((sum, t) => sum + t.income, 0);
+    const paid = window._payments
+      .filter(p => p.driver === d.name)
+      .reduce((sum, p) => sum + p.amount, 0);
+    const pending = tripTotal - paid;
+    if (pending > 0) {
+      driverPayStatus[d.name] = pending;
+    }
+  });
+  
+  if (Object.keys(driverPayStatus).length === 0) {
+    payTbody.innerHTML = '<tr class="no-records"><td colspan="4">No pending payments</td></tr>';
+  } else {
+    Object.entries(driverPayStatus).forEach(([driver, pending]) => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${driver}</td>
+        <td class="val-red">₹${pending.toFixed(0)}</td>
+        <td>-</td>
+        <td><span class="badge b-default">Pending</span></td>
+      `;
+      payTbody.appendChild(row);
+    });
+  }
+}
+
+// ============= EXPORT FUNCTIONS =============
+function exportTrucks() {
+  const data = window._trucks.map(t => ({
+    'Truck #': t.number,
+    'Type': t.type,
+    'Capacity': t.capacity,
+    'Owner': t.owner,
+    'Status': t.status,
+    'Insurance Till': t.insurance,
+    'Gitti Rate': t.rates.gitti,
+    'Gypsum Rate': t.rates.gypsum
+  }));
+  exportToExcel(data, 'Trucks_' + new Date().getTime());
+}
+
+function exportDrivers() {
+  const data = window._drivers.map(d => ({
+    'Name': d.name,
+    'Mobile': d.mobile,
+    'License': d.license,
+    'License Valid': d.licenseValidTill,
+    'Salary': d.salary,
+    'Commission': d.commission,
+    'Status': d.status
+  }));
+  exportToExcel(data, 'Drivers_' + new Date().getTime());
+}
+
+function exportTrips() {
+  const data = window._trips.map(t => ({
+    'Trip ID': t.id,
+    'Truck': t.truck,
+    'Driver': t.driver,
+    'Material': t.material,
+    'From': t.from,
+    'To': t.to,
+    'Distance (km)': t.distance,
+    'Rate (₹/km)': t.rate,
+    'Income (₹)': t.income,
+    'Expense (₹)': t.totalExpense,
+    'Profit (₹)': t.profit,
+    'Date': t.date
+  }));
+  exportToExcel(data, 'Trips_' + new Date().getTime());
+}
+
+function exportPayments() {
+  const data = window._payments.map(p => ({
+    'Payment ID': p.id,
+    'Driver': p.driver,
+    'Amount': p.amount,
+    'Type': p.type,
+    'Date': p.date,
+    'Notes': p.notes
+  }));
+  exportToExcel(data, 'Payments_' + new Date().getTime());
+}
+
+function exportLedger() {
+  const data = [];
+  let balance = 0;
+  const allEntries = [];
+  
+  window._ledger.forEach(e => {
+    allEntries.push({
+      date: e.date,
+      description: e.description,
+      income: e.income,
+      expense: e.expense
+    });
+  });
+  
+  window._trips.forEach(t => {
+    allEntries.push({
+      date: t.date,
+      description: `Trip: ${t.truck} (${t.driver})`,
+      income: t.income,
+      expense: t.totalExpense
+    });
+  });
+  
+  window._payments.forEach(p => {
+    allEntries.push({
+      date: p.date,
+      description: `Payment: ${p.driver}`,
+      income: 0,
+      expense: p.amount
+    });
+  });
+  
+  allEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
+  
+  allEntries.forEach(e => {
+    balance += e.income - e.expense;
+    data.push({
+      'Date': e.date,
+      'Description': e.description,
+      'Income (₹)': e.income || '',
+      'Expense (₹)': e.expense || '',
+      'Balance (₹)': balance
+    });
+  });
+  
+  exportToExcel(data, 'Ledger_' + new Date().getTime());
+}
+
+function exportToExcel(data, filename) {
+  const worksheet = XLSX.utils.json_to_sheet(data);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+  XLSX.writeFile(workbook, filename + '.xlsx');
+}
+
+// ============= INIT =============
+function loadAllData() {
+  renderTrucks();
+  renderDrivers();
+  renderTrips();
+  renderPayments();
+  renderLedger();
+  updateTruckDatalist();
+  updateDriverDatalist();
+  updateLedgerSummary();
+  document.getElementById('tp-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('py-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('lg-date').value = new Date().toISOString().split('T')[0];
+}
+
+// Check if already logged in
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('currentUser');
+  if (saved) {
+    currentUser = JSON.parse(saved);
+    document.getElementById('login-overlay').style.display = 'none';
+    document.getElementById('main-interface').style.display = 'block';
+    document.getElementById('header-user').textContent = currentUser.displayName || currentUser.username;
+    updateHeaderDate();
+    loadAllData();
+    updateDashboard();
+  }
+});
 </script>
+
 </body>
 </html>
